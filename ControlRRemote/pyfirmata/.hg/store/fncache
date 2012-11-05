@@ -1,0 +1,17 @@
+data/setup.py.i
+data/requirements.txt.i
+data/tests.py.i
+data/docs/Makefile.i
+data/pyfirmata/pyfirmata.py.i
+data/pyfirmata/boards.py.i
+data/.hgtags.i
+data/pyfirmata/__init__.py.i
+data/.hgignore.i
+data/pyfirmata/util.py.i
+data/docs/index.rst.i
+data/docs/conf.py.i
+data/README.rst.i
+data/LICENSE.i
+data/pyfirmata/mockup.py.i
+data/__init__.py.i
+data/docs/pyfirmata.rst.i
