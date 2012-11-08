@@ -12,7 +12,6 @@ tar xvzf libmosquitto.tar.gz
 
 cd libmosquitto
 
-./configure
 make 
 sudo make install 
 
