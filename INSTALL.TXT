@@ -4,7 +4,7 @@ se instaleaza compilatorul de C, C++ si librariile necesare folosind:
 
 sudo apt-get install gcc g++ libssl-dev
 
-downloadam libmosquitto
+downloadam libmosquitto  de la http://mosquitto.org/files/source/mosquitto-1.0.5.tar.gz
 
 dezarhivam:
 
