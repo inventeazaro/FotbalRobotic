@@ -15,5 +15,7 @@ cd mosquitto-1.0.5
 make 
 sudo make install 
 
-
+Pentru cei care au erori la pasul `make`: 
+make clean 
+make WITH_TLS_PSK=no
  
