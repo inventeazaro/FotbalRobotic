@@ -8,9 +8,9 @@ downloadam libmosquitto  de la http://mosquitto.org/files/source/mosquitto-1.0.5
 
 dezarhivam:
 
-tar xvzf libmosquitto-1.0.5.tar.gz
+tar xvzf mosquitto-1.0.5.tar.gz
 
-cd libmosquitto-1.0.5
+cd mosquitto-1.0.5
 
 make 
 sudo make install 
