@@ -31,9 +31,10 @@ void message_callback(struct mosquitto *mosq, void *obj, const struct mosquitto_
 
 int main(int argc, char *argv[])
 {
-	char clientid[24];
+	char clientid[24]="Move Test";
 	struct mosquitto *mosq;
 	int rc = 0;
+	int mid;
 
 	signal(SIGINT, handle_signal);
 	signal(SIGTERM, handle_signal);
