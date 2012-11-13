@@ -1,0 +1,12 @@
+mosquitto_sub -h 192.168.1.72 -t "status" 
+
+cd mosquitto-1.0.5/src
+pornire broker: ./mosquitto
+ascultare mesaje local:
+mosquitto_sub -h localhost -t "#" 
+
+trimitere mesaje local:
+mosquitto_pub -h localhost -t "status" -m mesaj
+
+
+
