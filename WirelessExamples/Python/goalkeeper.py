@@ -6,7 +6,7 @@ from struct import *
 
 client = mosquitto.Mosquitto("Goalkeeper")
 
-client.connect("127.0.0.1")
+client.connect("192.168.1.72")
 
 time.sleep(0.05)
 

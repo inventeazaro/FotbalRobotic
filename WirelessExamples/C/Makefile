@@ -1,5 +1,5 @@
-CFLAGS=-Wall -ggdb -I../../libs/mosquitto-1.0.2/lib
-LDFLAGS=../../libs/mosquitto-1.0.2/lib/libmosquitto.so.1
+CFLAGS=-Wall -ggdb -I../../libs/mosquitto-1.0.5/lib
+LDFLAGS=../../libs/mosquitto-1.0.5/lib/libmosquitto.so.1
 
 .PHONY: all clean
 
