@@ -1,0 +1,21 @@
+Pe ubuntu:
+
+se instaleaza compilatorul de C, C++ si librariile necesare folosind: 
+
+sudo apt-get install gcc g++ libssl-dev
+
+downloadam libmosquitto  de la http://mosquitto.org/files/source/mosquitto-1.0.5.tar.gz
+
+dezarhivam:
+
+tar xvzf mosquitto-1.0.5.tar.gz
+
+cd mosquitto-1.0.5
+
+make 
+sudo make install 
+
+Pentru cei care au erori la pasul `make`: 
+make clean 
+make WITH_TLS_PSK=no
+ 
