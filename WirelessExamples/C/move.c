@@ -20,6 +20,14 @@ struct control{
     int time;
 } ctr;
 
+struct robotCoords {
+    int id; // id robot - 1..10
+    int x;  // 0...800  - relative la terenul de joc
+    int y;  // 0...600 
+    int angle; // unghi fata de baza ringului
+    int timestamp; // timpul cand au fost calculate - UNIXTIME - Ex: 1352460922
+};
+
 static int run = 1;
 
 void handle_signal(int s)
@@ -33,6 +41,10 @@ void connect_callback(struct mosquitto *mosq, void *obj, int result)
 
 void message_callback(struct mosquitto *mosq, void *obj, const struct mosquitto_message *message)
 {
+	struct robotCoords *coordonate = (struct robotCoords *)message->payload;
+	
+	printf("X: %d Y: %d\n", coordonate->x, coordonate->y);
+	fflush(stdout);
 }
 
 int main(int argc, char *argv[])
@@ -55,7 +67,7 @@ int main(int argc, char *argv[])
 
 		rc = mosquitto_connect(mosq, mqtt_host, mqtt_port, 60);
 				
-		mosquitto_subscribe(mosq, NULL, "#", 0);
+		mosquitto_subscribe(mosq, NULL, "coords", 0);
 		
 		ctr.left=100;
 		ctr.right=100;
