@@ -1,0 +1,4 @@
+sudo apt-get install flex bison libboost-filesystem1.48-dev libboost-program-options1.48-dev qt4-dev-tools libaudio-dev libxt-dev libpng12-dev libxi-dev libxrender-dev libfreetype6-dev libfontconfig1-dev libglib2.0-dev
+./configure
+make
+sudo make install 
