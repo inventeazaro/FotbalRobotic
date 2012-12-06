@@ -1,3 +1,4 @@
+#!/usr/bin/python
 ''' multi_color_two_object.py
 
 RobotTracker prototype
@@ -14,41 +15,69 @@ from struct import *
 
 global imghsv
 
-mosq = mosquitto.Mosquitto("RoboTracker")
-mosq.connect("192.168.1.72")
+#mosq = mosquitto.Mosquitto("RoboTracker")
+#mosq.connect("192.168.1.72")
 
 def getthresholdedimgR4(imhsv):		
 	# A little change here. Creates images for blue and yellow (or whatever color you like).
-	imgRed =cv.CreateImage(cv.GetSize(imhsv),8,1)
-	imgBlue=cv.CreateImage(cv.GetSize(imhsv),8,1)
-	imgGreen=cv.CreateImage(cv.GetSize(imhsv),8,1)
+	imgRed   =cv.CreateImage(cv.GetSize(imhsv),8,1)
+	imgYellow=cv.CreateImage(cv.GetSize(imhsv),8,1)
+	imgGreen =cv.CreateImage(cv.GetSize(imhsv),8,1)
 	
 	imgthreshold=cv.CreateImage(cv.GetSize(imhsv),8,1)
 	
-	cv.InRangeS(imghsv,cv.Scalar(169, 168, 115),cv.Scalar(180, 243, 200),imgRed)	# Select a range of yellow color
-	cv.InRangeS(imghsv,cv.Scalar(100,100,100),cv.Scalar(120,255,255),imgBlue)	# Select a range of blue color
-	cv.InRangeS(imghsv,cv.Scalar(67, 103, 46),cv.Scalar(100, 209, 184),imgGreen)	# Select a range of blue color
+	cv.InRangeS(imghsv,cv.Scalar(0, 190, 130),cv.Scalar(18, 255, 190),imgRed)	# Select a range of red color
+	cv.InRangeS(imghsv,cv.Scalar(100,100,100),cv.Scalar(120,255,255),  imgYellow)	# Select a range of blue color
+	cv.InRangeS(imghsv,cv.Scalar(67, 103, 46),cv.Scalar(100, 209, 184),imgGreen)	# Select a range of green color
+	
+	storage = cv.CreateMemStorage(0)
+	redContour = cv.FindContours(imgRed, storage, cv.CV_RETR_CCOMP, cv.CV_CHAIN_APPROX_SIMPLE)
+	points = []
+	
+	while redContour:
+		# Draw bounding rectangles
+		bound_rect = cv.BoundingRect(list(redContour))
+		#bound_rect = cv.BoundingRect(contour)
+
+		# for more details about cv.BoundingRect,see documentation
+		pt1 = (bound_rect[0], bound_rect[1])
+		pt2 = (bound_rect[0] + bound_rect[2], bound_rect[1] + bound_rect[3])
+		points.append(pt1)
+		points.append(pt2)
+		cv.Rectangle(imhsv, pt1, pt2, cv.CV_RGB(255,0,0), 1)
+	
+		#Calculating centroids
+		centroidx=cv.Round((pt1[0]+pt2[0])/2)
+		centroidy=cv.Round((pt1[1]+pt2[1])/2)
+		area = cv.ContourArea(list(redContour))
+		
+		redContour = redContour.h_next()
+	
+	while yellowContour:
+		# Draw bounding rectangles
+		bound_rect = cv.BoundingRect(list(redContour))
+		#bound_rect = cv.BoundingRect(contour)
+
+		# for more details about cv.BoundingRect,see documentation
+		pt1 = (bound_rect[0], bound_rect[1])
+		pt2 = (bound_rect[0] + bound_rect[2], bound_rect[1] + bound_rect[3])
+		points.append(pt1)
+		points.append(pt2)
+		cv.Rectangle(imhsv, pt1, pt2, cv.CV_RGB(255,0,0), 1)
+	
+		#Calculating centroids
+		centroidx=cv.Round((pt1[0]+pt2[0])/2)
+		centroidy=cv.Round((pt1[1]+pt2[1])/2)
+		area = cv.ContourArea(list(redContour))
+		
+		redContour = redContour.h_next()
+	
+	
+	cv.ShowImage("Ceva",imhsv)
+	
 	
 	cv.Add(imgRed,imgBlue,imgthreshold)
 	cv.Add(imgGreen, imgGreen, imgthreshold)
-	return imgthreshold
-
-def getthresholdedimgR7(imhsv):		
-	# A little change here. Creates images for blue and yellow (or whatever color you like).
-	imgYellow =cv.CreateImage(cv.GetSize(imhsv),8,1)
-	imgBlue=cv.CreateImage(cv.GetSize(imhsv),8,1)
-	imgGreen=cv.CreateImage(cv.GetSize(imhsv),8,1)
-	
-	imgthreshold=cv.CreateImage(cv.GetSize(imhsv),8,1)
-	imgInterim  =cv.CreateImage(cv.GetSize(imhsv),8,1)
-	
-	
-	cv.InRangeS(imghsv,cv.Scalar(20,100,100),cv.Scalar(30,255,255),imgYellow)	# Select a range of yellow color
-	cv.InRangeS(imghsv,cv.Scalar(100,100,100),cv.Scalar(120,255,255),imgBlue)	# Select a range of blue color
-	cv.InRangeS(imghsv,cv.Scalar(67, 103, 46),cv.Scalar(100, 209, 184),imgGreen)	# Select a range of blue color
-	
-	cv.Add(imgYellow,imgBlue,imgInterim)
-	cv.Add(imgGreen, imgInterim, imgthreshold)
 	return imgthreshold
 
 def getthresholdedimg(imhsv):	
@@ -63,7 +92,7 @@ def getthresholdedimg(imhsv):
 	cv.Add(imgyellow,imgblue,imgthreshold)
 	return imgthreshold
 
-capture=cv.CaptureFromCAM(1)
+capture=cv.CaptureFromCAM(0)
 frame = cv.QueryFrame(capture)
 frame_size = cv.GetSize(frame)
 test=cv.CreateImage(cv.GetSize(frame),8,3)
@@ -83,7 +112,7 @@ while(1):
 	color_image = cv.QueryFrame(capture)
 	imdraw=cv.CreateImage(cv.GetSize(frame),8,3)
 	cv.SetZero(imdraw)
-	cv.Flip(color_image,color_image,-1)
+	#cv.Flip(color_image,color_image,-1)
 	cv.Smooth(color_image, color_image, cv.CV_GAUSSIAN, 3, 0)
 	imghsv=cv.CreateImage(cv.GetSize(color_image),8,3)
 	cv.CvtColor(color_image,imghsv,cv.CV_BGR2HSV)
@@ -117,7 +146,7 @@ while(1):
 		if(area > 100):
 			print "CentroidXY:" + str(centroidx) +":" +str(centroidy) + "A:" + str(area)
 			coords = pack('iiiii', 4,centroidx, centroidy, 0, int(time.time()))
-			mosq.publish("coords", coords, 0)
+			#mosq.publish("coords", coords, 0)
 	
 		contour = contour.h_next()
 		print contour
@@ -129,8 +158,7 @@ while(1):
 		elif (67<cv.Get2D(imghsv,centroidy,centroidx)[0]<100):
 			green.append((centroidx, centroidy))
 
-# 		Now drawing part. Exceptional handling is used to avoid IndexError.	After drawing is over, centroid from previous part is
-#		removed from list by pop. So in next frame,centroids in this frame become initial points of line to draw.		
+# 		Now drawing part. Exceptional handling is used to avoid IndexError.	After drawing is over, centroid from previous part is #		removed from list by pop. So in next frame,centroids in this frame become initial points of line to draw.		
 	try:
 		cv.Circle(imdraw,red[1],5,(0,255,255))
 		cv.Line(imdraw,red[0],red[1],(0,255,255),3,8,0)
