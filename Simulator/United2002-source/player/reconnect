@@ -1,0 +1,31 @@
+#!/bin/csh
+#Execution File
+
+if ("$#argv" != "5") then
+	echo usage <host> <mygoals> <theirgoals> <firstnum> <lastnum>
+else 
+	set host = $1
+	set mygoals = $2
+	set theirgoals = $3
+	set firstnum = $4
+	set lastnum = $5
+endif
+
+#echo "Running with the following parameters"
+#echo "Hostname: " $host
+#echo "Team: " $teamname
+#echo "Program: " $programname
+#echo "Sim_step: " $simulator_step
+
+set count = $firstnum
+while ($count <= $lastnum)
+  if ($count == 1) then
+    ./peterclient -file server.conf -file client.conf -file ../shared/share.conf -host $host -my_score $mygoals -their_score $theirgoals -reconnect $count -goalie &
+  else
+    ./peterclient -file server.conf -file client.conf -file ../shared/share.conf -host $host -my_score $mygoals -their_score $theirgoals -reconnect $count &
+  endif
+  ./quicksleep
+  #sleep $delay
+  @ count = $count + 1
+end
+

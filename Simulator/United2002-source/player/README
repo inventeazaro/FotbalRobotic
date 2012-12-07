@@ -1,0 +1,376 @@
+README
+=====
+
+Peter Stone, Assistant Professor 
+Department of Computer Sciences  
+The University of Texas at Austin  
+1 University Station C0500
+Austin, Texas 78712-1188  U.S.A.  
+phone: 512-471-9796 
+fax:   512-471-8885
+pstone@cs.utexas.edu 
+www.cs.utexas.edu/~pstone 
+
+Copyright 2002 Peter Stone
+
+This directory contains the source code for the low-level skills of
+the United-2002 simulator team.  It is based closesly upon the
+CMUnited-99 simulation source code that is avaiable from
+http://www.cs.cmu.edu/~pstone/RoboCup/CMUnited99-sim.html.  There may
+also be some elements from the ATT-CMUnited-2000 team, with additional
+contributions since CMUnited-99 from Patrick Riley, David McAllester,
+and Manuela Veloso:
+http://www.cs.cmu.edu/~pstone/RoboCup/ATTCMUnited2000-sim.html.
+
+This code has been used as the basis for a course on "Autonomous
+Multiagent Systems" in the Department of Computer Sciences at the
+University of Texas at Austin.  Some assignments based on the code and
+notes on using the code are available form the course page at
+http://www.cs.utexas.edu/~pstone/Courses/378fall02/.  An updated
+version of the course can be found at
+http://www.cs.utexas.edu/~pstone/Courses/378fall03/.  A paper
+describing the use of this code in these courses is available from
+http://www.cs.utexas.edu/users/pstone/papers.html: "Autonomous
+Multiagent Systems as an Introduction to CS Research."
+
+You may need to alter the Makefile for your architecture.  It has been
+tested under Linux.  
+
+To compile, first do configure (from a local machine directory), 
+do "gmake depend", then do "gmake"
+To start one agent, type './start <servername> <teamname>' where
+<servername> is the name of the machine running the server.
+
+To start more than one player at a time, you can alter the start script
+or call it multiple times.
+
+This directory contains:
+
++ A Makefile
++ the source code (*.[Ch])
++ a client configuration file (client.conf)
++ the server configuration files (server.conf, player.conf)
++ a start script (start)
++ this README file
+
+The point of this code is to help people get past the low-level
+implementation details involved in using the soccer server (version
+8.x).  
+
+I am providing this code as-is, with no support provided.  However, I
+would be interested in hearing from you regarding how easily you were
+able to compile, run, and use the code.
+
+To test out the sample behaviors, see the instructions in the "behave"
+function in behave.C.  The accessors to the world model can be seen in
+MemPlayer.h and MemPosition.h.  They are member functions of a
+variable called "Mem" so they must be called as, for example,
+"Mem->BallAbsolutePosition()."
+
+If you see many errors of the form: 
+
+> PETER's ERROR (player 9, time 354.0): Server missed a turn at time 353
+
+Then the clients are not able to keep up with the server speed.
+(occasional errors of this type are OK)
+There are two possible solutions.
+
+1) Distribute the server and clients among more and/or faster machines
+2) Slow down the server by increasing slow_down_factor in
+~/.rcssserver-server.conf.  To do this, add a line such as:
+slow_down_factor: 3
+(the default value is 1.  3 makes the server go 3 times as slow).
+If you do this, make sure that the simulator and clients are reading
+the same rcssserver-server.conf file.
+
+
+
+
+==================================================================================
+
+Following is some limited documenation regarding the code's structure.
+
+==================================================================================
+
+------------------
+General structure:
+------------------
+The client keeps its view of the world in a big "Memory" structure
+	defined in Mem*.[Ch]
+
+The action to be sent to the server is chosen in 
+	{behave,kick,dribble,test}.Ch.  The top-level action function
+	is behave() defined in behave.C
+
+
+------------------------
+Overall flow of control:
+------------------------
+all in client.C
+
+When the timer expires (every SP_simulator_step/CP_senses_per_cycle)
+	-- block IO
+	-- when time changes, update all object states to match 
+		the current server time as well as possible, act
+	-- if time is the same and there's a  turn-neck command
+	-- if time is the same (or no action), communicate,
+		change_view, or sense_body
+	-- (don't communicate more than once every n cycles)
+	-- unblock IO
+(In the current version of the simulator, all commands can be sent at once). 
+
+When a sensation comes:
+	-- block timer
+	-- parse it
+	-- store the information in temporary variables for later
+		update (see above)
+	-- unblock timer
+	-- choose communcations in response and/or to coach
+
+
+------------------------
+Timing
+------------------------
+Time is represented as two integers:  
+	t = server time 
+	s = # cycles the clock's been stopped (incremented as the
+					       action timer goes off)
+addition and subtraction are defined to take into account the stopped
+cycles.  But only the last time the clock restarted is stored.  So
+you can't subtract arbitrarily far back or add beyond the current
+time.
+
+LastStartClockTime is set to be the time of the final action
+opportunity before the mode changed away from PM_Before_Kick_Off.
+
+One glitch is the transition from server time to stopped-clock time.
+Some sights may have already occurred at the subsequent stopped-clock
+time.  For this reason, sanitize_times must be called on all the time
+variables that could have been updated since the last action
+opportunity: 
+	CurrentTime, 
+	LastSightTime, 
+	LastSoundTime, 
+	sense_time,
+	and all the times of temporary sight and sound info variables.
+Sanitize_time just transfers the excess s to t.
+
+
+------------------------
+Sending actions: 
+------------------------
+One structure each for turn/dash/kick/catch, turn-neck, communicate, change_view
+	-- Running action loop (behave) possibly identifies a single
+	   turn/dash/kick/catch and a turn-neck.  The former gets priority.
+	-- If no action, check to see if there's a turn-neck to execute
+	-- If no action, check memory to see if there's something to say
+	-- If no communication, execute a pending change_view
+(In the current version of the simulator, all commands can be sent at once). 
+
+
+-------------------------
+At startup: 
+-------------------------
+MemOption has all the server, client, and initialize parameters.
+They can be loaded from a file with the -file flag or from the 
+command line with various flags as indicated in MemOption.C.
+To add a new option, just need to add it in MemOption.h and in
+2 places in MemOption.C (one to set the default, one to set the flag).
+It should be possible to load from more than one file.
+
+SP_ is a server parameter
+CP_ is a client parameter
+FP_ is a formation parameter
+VP_ is client version parameter
+IP_ is initialize parameter
+
+
+-------------------------
+Object Knowledge representation 
+-------------------------
+              Object    	 
+	    /   \
+	----     ----
+       /	     \
+StationaryObject MobileObject
+		   /   	  \
+		  /   	   \
+		 /  	    \
+	     BallObject   PlayerObject
+			     
+Object -- global position stored with confidence
+StationaryObject -- nothing added
+MobileObject -- add global velocity info
+BallObject -- nothing added (except if the ball's kickable)
+PlayerObject -- add global facing info
+
+When seen or heard (from teammate), relative or global info about the
+object status is stored with confidences and time stamps in temporary
+variables.
+
+When updated, precedence is given to seen information (sets
+confidence to 1) unless a teammate saw the object from closer.
+
+If no new information arrived, the velocity and actions taken (kick)
+are used to update the position of the objcet.  Then confidence is
+decayed.
+
+In PositionInfo, all lines and markers are stored as
+StationaryObjects.  There is one ball, and several players allocated
+as well.  Pointers to seen markers, and players on each team are
+maintained.
+
+Players are stored in a big array of size 21 (11*2-1).
+Arrays of pointers into this array representing my players, their
+players, and teamless players are stored.  Free players are players
+in the top array that aren't in any of the others.  
+Players that are seen without numbers and/or side are stored as
+unknown players until their positions can be determined based on my
+position when they were seen.  Then they are reconciled with closest
+appropriate players.
+	
+Determine the x,y positions, headings, speeds of all players, ball.
+When relative info needed, convert 
+
+
+
+-------------------------
+Updating Memory
+-------------------------
+PositionInfo updates the global info once a cycle (right before
+action).  The goal is to match the server's state at the current time
+as closely as possible.  If there's a sight, it came from the server
+either at the current time or one cycle ago.
+
+1. Update my position 
+	-- if there's a new sight, bring my position up to date for
+		that time (either now or one cycle ago).
+	-- from the sight, use the line and closest object to localize
+	-- use the sensed speed from that time to determine velocity.
+		Assume velocity is in the direction I'm facing
+	-- if there's no sight, bring velocity up to date, possibly
+		using known dashes, then update position, decay
+		velocity
+2. Update the ball 
+	-- if there's a new sight, use my position and the ball's
+		relative position info to set its position.  Also
+		update its velocity if moving.  Otherwise check if 
+		the new position is where it would have been estimated
+		to see if velocity is correct.	
+	-- if it should be in sight, but isn't, set confidence to 0
+	-- update its position by estimating, including possible kick
+		information.  Perhaps only the velocity needs to be 
+		estimated.
+	-- if it should be in sight, but isn't, set confidence to 0
+	-- see if any heard information would increase the confidence
+		in the ball's position or velocity at this time.  If
+		so, go for it, estimating the position up to the
+		current time.	
+3. Update the players
+	-- First see if any of the teamless players seen match up with
+		previously known players
+	-- do the same update as for the ball, except adding in
+		information about which way each player is facing
+	-- If any players are no longer valid, free up the pointers
+		appropriately
+4. Update my position to the current time
+	-- at this point it might only be known to the previous time
+		step so that the relative ball and player positions
+		would be correct.  If so, estimate the final step.
+5. Update my stamina based on dashes taken, effort decays, and sensed
+		info
+
+-------------------------
+Parsing 
+-------------------------
+Find the closest flag and visible line for angle knowledge.
+No longer worrying about motion from markers -- using sense_body.
+Store relative positions of objects, sense_body info, or heard info
+with time stamps to be used later when positions are updated.
+
+
+-------------------------
+Memory structure 
+-------------------------
+		OptionInfo
+
+		PlayerInfo
+
+		PositionInfo
+
+                ActionInfo
+
+                 Memory	      
+			      
+OptionInfo to get options     
+PlayerInfo action queues, time, stamina, game status (score, mode), etc.
+PositionInfo with all other object positions
+ActionInfo keep track of action variables
+Memory  with all else
+
+==================================================================================
+
+/* client.C contains the main program loop 
+ * It is partially based on Player.C from the turnballclient of Alessandro Bissacco  
+ */
+
+/* netif.C handles the udp socket communication with the server
+ * Based on Noda's sampleclient
+ */
+
+/* geometry.C defines several constructs for doing geometric reasoning on the soccer field
+ */
+
+/* utils.C implements generic utility functions that are used throughout the program
+ * The Time class allows clients to reason about time progressing even when the 
+ * soccerserver clock is stopped.
+ */
+
+/* parse.C parses incoming messages from the server
+ */
+
+/* types.h defines types used throughout the program
+ */
+
+
+/* MemOption.C contains all the client parameters
+ * They can be specified as .conf files or command line options in the same style
+ * as for soccerserver.  The code is based on Noda's soccerserver code.
+ *
+ * Parameters starting with SP_ are server parameters.  Most can be read from
+ * the standard server.conf file
+ *
+ * Not all paramters listed here have meaning in the release version of CMUnited99
+ */
+
+/* MemPlayer.C stores all the information relating to the client itself:
+ * position on the field, speed, stamina, etc.
+ */
+
+/* MemPosition.C stores all the information relating to other objects on the field:
+ * other players, the ball, markers, etc.
+ */
+
+/* MemAction.C contains utility functions for ball interception
+   Created by Patrick Riley
+ */
+
+/* Memory.C contains the top-level Memory class 
+ */
+
+/* behave.C is called once every server cycle.
+   It determines the action to be sent to the server
+ */
+
+/* test.C contains functions that demonstrate our client's abilities
+ * They should be called from behave.C
+ */
+
+/* kick.C contains functions for kicking the ball
+   Created by Patrick Riley
+ */
+
+/* dribble.C contains functions for dribbling the ball
+   Created by Patrick Riley
+ */
+
