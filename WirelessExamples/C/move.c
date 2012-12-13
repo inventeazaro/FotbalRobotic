@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 		ctr.left=100;
 		ctr.right=100;
 		ctr.time=0;
-		mosquitto_publish(mosq, &mid, "in15", sizeof(ctr), &ctr, 2, false);
+		mosquitto_publish(mosq, &mid, "in15", sizeof(ctr), &ctr, 0, false);
 	
 		while(run){
 			rc = mosquitto_loop(mosq, -1, 1);

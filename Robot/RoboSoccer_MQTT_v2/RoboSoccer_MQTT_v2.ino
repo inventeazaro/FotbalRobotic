@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include "id.h"
 
-#define SW_VERSION    "RoboSoccer v0.3"
+#define SW_VERSION    "RoboSoccer v0.4"
 #define MQTT_TIMEOUT  1000
 
 int MOTOR2_PIN1 = 5;
@@ -80,6 +80,15 @@ void loop() {
     motor1 = 0;
     motor2 = 0;
     mySerial.println("Emergency motor break!!!");
+
+    if(!client.connected()) {
+      if (client.connect("RoboSoccerBot " ROBOT_ID)) {
+        client.publish(("status"),(SW_VERSION " " ROBOT_ID));
+        client.subscribe((ROBOT_ID));
+      } else {
+        mySerial.println(F("Connection problem"));
+      }
+    }
   }
   go(motor1,motor2);
   client.loop();
