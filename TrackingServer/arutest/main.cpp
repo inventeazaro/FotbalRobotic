@@ -91,7 +91,7 @@ int main(int argc,char **argv)
 
     system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
 
-    char clientid[24]="Aruco Coords server";
+    char clientid[64]="FotbalRobotic.ro Tracking Server";
     mosquitto_lib_init();
 
     mosq = mosquitto_new(clientid, true, NULL);
@@ -102,12 +102,6 @@ int main(int argc,char **argv)
 
     try
     {
-        /*if (argc<2) {
-            cerr<<"Usage: (in.jpg|in.avi) [cameraParams.yml] [markerSize] [outImage]"<<endl;
-            exit(0);
-        }*/
-
-
         aruco::CameraParameters CamParam;
         MarkerDetector MDetector;
         vector<Marker> Markers;
@@ -118,14 +112,11 @@ int main(int argc,char **argv)
         VideoCapture vreader(1);
         const char mainWindow[] = "FotbalRobotic Tracker";
         cv::namedWindow(mainWindow, CV_WINDOW_FULLSCREEN);
-        cv::Mat temp;
         cv::Mat HSVImage;
         cv::Mat BallMask;
 
         int mid = 0;
-
-        int valSigmaX = 3;
-        int valSigmaY = 0;
+        int rc = 0;
 
         MarkerSize=10;
 
@@ -280,7 +271,12 @@ int main(int argc,char **argv)
         }
 
         // Call mosquitto
-        mosquitto_loop(mosq, 1, 50);
+        rc = mosquitto_loop(mosq, 1, 50);
+
+        if(rc) {
+            sleep(20);
+            mosquitto_reconnect(mosq);
+        }
 
         //draw a 3d cube in each marker if there is 3d info
         //if (  CamParam.isValid() && MarkerSize!=-1)
