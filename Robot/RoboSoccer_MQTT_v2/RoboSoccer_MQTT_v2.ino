@@ -5,13 +5,15 @@
 #include <PubSubClient.h>
 #include "id.h"
 
-#define SW_VERSION    "RoboSoccer v0.3"
+#define SW_VERSION    "RoboSoccer v0.6"
 #define MQTT_TIMEOUT  1000
 
 int MOTOR2_PIN1 = 5;
 int MOTOR2_PIN2 = 3;
 int MOTOR1_PIN1 = 6;
 int MOTOR1_PIN2 = 9;
+
+int BUZZER_PIN = 7;
 
 // Update these with values suitable for your network.
 byte server[] = { 192, 168, 1, 72 };
@@ -37,6 +39,9 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   
   motor1 = ctr->left;
   motor2 = ctr->right;
+  time   = ctr->time;
+  if (time == 0)
+    time = MQTT_TIMEOUT;
   lastTimeReceived = millis();
     
   mySerial.print((long int)lastTimeReceived);
@@ -54,6 +59,8 @@ void setup() {
   pinMode(MOTOR1_PIN2, OUTPUT);
   pinMode(MOTOR2_PIN1, OUTPUT);
   pinMode(MOTOR2_PIN2, OUTPUT);
+  
+  pinMode(BUZZER_PIN, OUTPUT);
 
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
@@ -76,13 +83,37 @@ void setup() {
 }
 
 void loop() {
-  if(millis() > lastTimeReceived+MQTT_TIMEOUT) {
+  int v = analogRead(0);
+  v = (v/2 - 10);
+  if(millis() >= lastTimeReceived+time) {
     motor1 = 0;
     motor2 = 0;
     mySerial.println("Emergency motor break!!!");
+
+    if(!client.connected()) {
+      if (client.connect("RoboSoccerBot " ROBOT_ID)) {
+        client.publish(("status"),(SW_VERSION " " ROBOT_ID));
+        client.subscribe((ROBOT_ID));
+      } else {
+        mySerial.println(F("Connection problem"));
+      }
+    }
   }
   go(motor1,motor2);
   client.loop();
+  
+  if(v < 320 ){
+    tone(7, 1000, 20);
+    //delay(200);
+    //tone(7, 5000, 1000);
+    //delay(200);
+    //tone(7, 2000, 1000);
+    //delay(200);
+    //tone(7, 4000, 1000);
+    //go(0, 0);
+    //go(0, 0);
+  }
+ 
 }
 
 void go(int speedLeft, int speedRight) {
