@@ -1,0 +1,296 @@
+/*
+ * United2002 (soccer client for Robocup2002)
+ * Peter Stone <pstone@cs.utexas.edu>
+ * Department of Computer Sciences
+ * The University of Texas at Austin
+ * Copyright (C) 2002 Peter Stone
+ *
+ * United-2002 was created by Peter Stone.
+ *
+ * You may copy and distribute this program freely as long as you
+ * retain this notice.  If you make any changes or have any comments
+ * we would appreciate a message.  For more information, please see
+ * http://www.cs.utexas.edu/~pstone/RoboCup/United2002-sim.html
+
+ * United-2002 was based closely on CMUnited-99:
+
+ * CMUnited99 (soccer client for Robocup99)
+ * Peter Stone <pstone@cs.cmu.edu>
+ * Computer Science Department
+ * Carnegie Mellon University
+ * Copyright (C) 1999 Peter Stone
+ *
+ * CMUnited-99 was created by Peter Stone, Patrick Riley, and Manuela Veloso
+ *
+ * You may copy and distribute this program freely as long as you retain this notice.
+ * If you make any changes or have any comments we would appreciate a message.
+ * For more information, please see http://www.cs.cmu.edu/~robosoccer/
+ */
+
+/* this file is meant to be included in a MemOption.C
+   this is the array needed for parsing */
+
+  /* Server params */
+{"version",        		(void *)&SP_version,          V_FLOAT},
+{"team_size",        		(void *)&SP_team_size,          V_INT},
+{"half",        		(void *)&SP_half,          V_INT},
+{"host",             		(void *)&SP_host,               V_STRING},
+{"goal_width",   		(void *)&SP_goal_width,         V_FLOAT},
+{"player_size",   		(void *)&SP_player_size,	V_FLOAT},
+{"player_decay",   	        (void *)&SP_player_decay,    	V_FLOAT},
+{"player_rand",   		(void *)&SP_player_rand,	V_FLOAT},
+{"player_weight",   	        (void *)&SP_player_weight,	V_FLOAT},
+{"player_speed_max",            (void *)&SP_player_speed_max,	V_FLOAT},
+{"player_accel_max",            (void *)&SP_player_accel_max,	V_FLOAT},
+{"stamina_max",   		(void *)&SP_stamina_max,	V_FLOAT},
+{"stamina_inc_max",   	        (void *)&SP_stamina_inc,	V_FLOAT},
+{"recover_dec_thr",   	        (void *)&SP_recover_dec_thr,	V_FLOAT},
+{"recover_min",   		(void *)&SP_recover_min, 	V_FLOAT},
+{"recover_dec",   		(void *)&SP_recover_dec, 	V_FLOAT},
+{"effort_init",   	        (void *)&SP_effort_init,         V_FLOAT},
+{"effort_dec_thr",   	        (void *)&SP_effort_dec_thr,	V_FLOAT},
+{"effort_min",   		(void *)&SP_effort_min, 	V_FLOAT},
+{"effort_dec",   		(void *)&SP_effort_dec, 	V_FLOAT},
+{"effort_inc_thr",   	        (void *)&SP_effort_inc_thr,	V_FLOAT},
+{"effort_inc",   		(void *)&SP_effort_inc,	        V_FLOAT},
+{"kick_rand",           (void *)&SP_kick_rand,           V_FLOAT},
+{"team_actuator_noise", (void *)&SP_team_actuator_noise, V_ONOFF},
+{"prand_factor_l",      (void *)&SP_prand_factor_l,      V_FLOAT},
+{"prand_factor_r",      (void *)&SP_prand_factor_r,      V_FLOAT},
+{"kick_rand_factor_l",  (void *)&SP_kick_rand_factor_l,  V_FLOAT},
+{"kick_rand_factor_r",  (void *)&SP_kick_rand_factor_r,  V_FLOAT},
+{"ball_size",   		(void *)&SP_ball_size,		V_FLOAT},
+{"ball_decay",   		(void *)&SP_ball_decay, 	V_FLOAT},
+{"ball_rand",   		(void *)&SP_ball_rand,		V_FLOAT},
+{"ball_weight",   		(void *)&SP_ball_weight,	V_FLOAT},
+{"ball_speed_max",   	        (void *)&SP_ball_speed_max,	V_FLOAT},
+{"ball_accel_max",   	        (void *)&SP_ball_accel_max,	V_FLOAT},
+{"dash_power_rate",   	        (void *)&SP_dash_power_rate,	V_FLOAT},
+{"kick_power_rate",   	        (void *)&SP_kick_power_rate,	V_FLOAT},
+{"kickable_margin",   	        (void *)&SP_kickable_margin,	V_FLOAT},
+{"control_radius",   	        (void *)&SP_control_radius,	V_FLOAT},
+{"catch_probability",   	(void *)&SP_catch_prob, 	V_FLOAT},
+{"catchable_area_l",            (void *)&SP_catch_area_l,	V_FLOAT},
+{"catchable_area_w",            (void *)&SP_catch_area_w,	V_FLOAT},
+{"goalie_max_moves",            (void *)&SP_goalie_max_moves, V_INT},
+{"maxpower",   		        (void *)&SP_max_power,		V_FLOAT},
+{"minpower",   		        (void *)&SP_min_power,		V_FLOAT},
+{"maxmoment",   		(void *)&SP_max_moment,		V_FLOAT},
+{"minmoment",   		(void *)&SP_min_moment,		V_FLOAT},
+{"maxneckang",	    	        (void *)&SP_max_neck_angle,	V_FLOAT},
+{"minneckang",		        (void *)&SP_min_neck_angle,	V_FLOAT},
+{"maxneckmoment",		(void *)&SP_max_neck_moment,	V_FLOAT},
+{"minneckmoment",		(void *)&SP_min_neck_moment,	V_FLOAT},
+{"visible_angle",   	        (void *)&SP_visible_angle,	V_FLOAT},
+{"visible_distance",            (void *)&SP_feel_distance,	V_FLOAT},
+{"audio_cut_dist",   	        (void *)&SP_audio_cut_dist,	V_FLOAT},
+{"quantize_step",   	        (void *)&SP_dist_qstep, 	V_FLOAT},
+{"quantize_step_l",   	        (void *)&SP_land_qstep, 	V_FLOAT},
+{"quantize_step_dir",			(void *)&SP_dir_qstep,	V_FLOAT},
+{"quantize_step_dist_team_l",	(void *)&SP_dist_qstep_l,	V_FLOAT},
+{"quantize_step_dist_team_r",	(void *)&SP_dist_qstep_r,	V_FLOAT},
+{"quantize_step_dist_l_team_l",	(void *)&SP_land_qstep_l,	V_FLOAT},
+{"quantize_step_dist_l_team_r",	(void *)&SP_land_qstep_r,	V_FLOAT},
+{"quantize_step_dir_team_l",	(void *)&SP_dir_qstep_l,	V_FLOAT},
+{"quantize_step_dir_team_r",	(void *)&SP_dir_qstep_r,	V_FLOAT},
+
+{"drop_ball_time",   	        (void *)&SP_drop_ball_time,   	V_INT},
+{"ckick_margin",   	        (void *)&SP_ckmargin,   	V_FLOAT},
+{"wind_dir",   		        (void *)&SP_wind_dir,   	V_FLOAT},
+{"wind_force",   		(void *)&SP_wind_force,  	V_FLOAT},
+{"wind_rand",   		(void *)&SP_wind_rand,  	V_FLOAT},
+{"wind_none",   		(void *)&SP_wind_none,  	V_ONOFF},
+{"wind_random",   		(void *)&SP_wind_random,	V_ONOFF},
+{"half_time",   		(void *)&SP_half_time,  	V_INT},
+{"port",   			(void *)&SP_port,       	V_INT},
+{"coach_port",   		(void *)&SP_coach_port,  	V_INT},
+{"olcoach_port",	        (void *)&SP_olcoach_port,	V_INT},
+{"simulator_step",   	        (void *)&SP_simulator_step,	V_INT},
+{"send_step",   		(void *)&SP_send_step,  	V_INT},
+{"recv_step",   		(void *)&SP_recv_step,  	V_INT},
+{"say_msg_size",   	        (void *)&SP_say_msg_size,	V_INT},
+{"clang_win_size",      (void *)&SP_clang_win_size, V_INT},
+{"clang_define_win",    (void *)&SP_clang_define_win, V_INT},
+{"clang_meta_win",      (void *)&SP_clang_meta_win, V_INT},
+{"clang_advice_win",    (void *)&SP_clang_advice_win, V_INT},
+{"clang_info_win",      (void *)&SP_clang_info_win, V_INT},
+{"clang_mess_delay",    (void *)&SP_clang_mess_delay, V_INT},
+{"clang_mess_per_cycle",      (void *)&SP_clang_mess_per_cycle, V_INT},
+{"hear_max",   		        (void *)&SP_hear_max,   	V_INT},
+{"hear_inc",   		        (void *)&SP_hear_inc,   	V_INT},
+{"hear_decay",   		(void *)&SP_hear_decay,  	V_INT},
+{"catch_ban_cycle",             (void *)&SP_catch_ban_cycle,	V_INT},
+{"coach",   			(void *)&SP_coach_mode,  	V_ONOFF},
+{"coach_w_referee",   	        (void *)&SP_coach_w_referee_mode,V_ONOFF},
+{"old_coach_hear",   			(void *)&SP_old_coach_hear,  	V_ONOFF},
+{"say_coach_cnt_max",           (void *)&SP_say_coach_cnt_max,V_INT},
+{"say_coach_msg_size",          (void *)&SP_say_coach_msg_size,V_INT},
+{"send_vi_step",                (void *)&SP_send_vi_step, V_INT},
+{"slow_down_factor",            (void *)&SP_slow_down_factor, V_INT},
+
+{"look_step",                   (void *)&SP_look_step,V_INT},
+{"use_offside",   		(void *)&SP_use_offside,	V_ONOFF},
+{"forbid_kick_off_offside",     (void *)&SP_forbid_kickoff_offside, V_ONOFF},
+{"log_file",		        (void *)&SP_logfile,		V_STRING},
+{"record",			(void *)&SP_recfile,		V_STRING},
+{"record_log",		        (void *)&SP_rec_log,		V_ONOFF},
+{"record_version",	        (void *)&SP_rec_ver,		V_INT},
+{"send_log",	                (void *)&SP_send_log,		V_ONOFF},
+{"log_times",	                (void *)&SP_log_times,		V_ONOFF},
+{"replay",			(void *)&SP_replay,		V_STRING},
+{"verbose",                     (void *)&SP_verbose,		V_ONOFF},
+{"offside_active_area_size",    (void *)&SP_offside_area,	V_FLOAT},
+{"inertia_moment",      	(void *)&SP_inertia_moment,     V_FLOAT},
+{"sense_body_step",      	(void *)&SP_sense_body_step,     V_INT},
+{"offside_kick_margin",         (void *)&SP_offside_kick_margin, V_FLOAT},
+{"record_messages",             (void *)&SP_record_messages,     V_ONOFF},
+  
+{"valid_message_chars",         (void *)&SP_valid_message_chars, V_STRING},
+
+{"max_cycles_since_io",     (void *)&CP_max_cycles_since_io,    V_INT},
+{"coach_message_chars",         (void *)&CP_coach_message_chars, V_STRING},
+{"player_message_chars",        (void *)&CP_player_message_chars, V_STRING},
+{"start_goal_l",            (void *)&SP_start_goal_l,       V_INT},
+{"start_goal_r",            (void *)&SP_start_goal_r,       V_INT},
+{"fullstate_l",             (void *)&SP_fullstate_l,        V_ONOFF},
+{"fullstate_r",             (void *)&SP_fullstate_r,        V_ONOFF},
+/* these two lines are just to keep the server from complaining about
+   unknown options */
+  //{"sfile",                   NULL, V_STRING},
+  //{"pfile",                   NULL, V_STRING},
+
+{"synch_mode",        (void *)&SP_synch_mode,     V_ONOFF},
+{"slowness_on_top_for_left_team", (void *)&SP_slowness_on_top_for_left_team,  V_FLOAT},  
+{"slowness_on_top_for_right_team",(void *)&SP_slowness_on_top_for_right_team,  V_FLOAT},
+{"landmark_file", (void *)&SP_landmark_file,  V_STRING},
+{"send_comms",        (void *)&SP_send_comms,     V_ONOFF},
+{"text_logging",        (void *)&SP_text_logging,     V_ONOFF},
+{"game_logging",        (void *)&SP_game_logging,     V_ONOFF},
+{"game_log_version",        (void *)&SP_game_log_version,     V_INT},
+{"text_log_dir", (void *)&SP_text_log_dir,  V_STRING},
+{"game_log_dir", (void *)&SP_game_log_dir,  V_STRING},
+{"text_log_fixed_name", (void *)&SP_text_log_fixed_name,  V_STRING},
+{"game_log_fixed_name", (void *)&SP_game_log_fixed_name,  V_STRING},
+{"text_log_fixed",        (void *)&SP_text_log_fixed,     V_ONOFF},
+{"game_log_fixed",        (void *)&SP_game_log_fixed,     V_ONOFF},
+{"text_log_dated",        (void *)&SP_text_log_dated,     V_ONOFF},
+{"game_log_dated",        (void *)&SP_game_log_dated,     V_ONOFF},
+{"log_date_format", (void *)&SP_log_date_format,  V_STRING},
+{"text_log_compression",        (void *)&SP_text_log_compression,     V_INT},
+{"game_log_compression",        (void *)&SP_game_log_compression,     V_INT},
+{"profile",        (void *)&SP_profile,     V_ONOFF},
+{"point_to_ban",        (void *)&SP_point_to_ban,     V_INT},
+{"point_to_duration",        (void *)&SP_point_to_duration,     V_INT},
+{"tackle_dist",        (void *)&SP_tackle_dist,     V_FLOAT},
+{"tackle_back_dist",        (void *)&SP_tackle_back_dist,     V_FLOAT},
+{"tackle_width",        (void *)&SP_tackle_width,     V_FLOAT},
+{"tackle_exponent",        (void *)&SP_tackle_exponent,     V_FLOAT},
+{"tackle_cycles",        (void *)&SP_tackle_cycles,     V_INT},
+{"tackle_power_rate",    (void *)&SP_tackle_power_rate, V_FLOAT},
+{"freeform_wait_period",  (void *)&SP_freeform_wait_period, V_INT},
+{"freeform_send_period",  (void *)&SP_freeform_send_period, V_INT},
+{"clang_del_win",     (void *)&SP_clang_del_win, V_INT},
+{"clang_rule_win",     (void *)&SP_clang_rule_win, V_INT},
+{"free_kick_faults",     (void *)&SP_free_kick_faults, V_ONOFF},
+{"back_passes",     (void *)&SP_back_passes, V_ONOFF},
+{"proper_goal_kicks",     (void *)&SP_proper_goal_kicks, V_ONOFF},
+{"stopped_ball_vel",     (void *)&SP_stopped_ball_vel, V_FLOAT},
+{"max_goal_kicks",     (void *)&SP_max_goal_kicks, V_INT},
+
+
+
+/* these are player params */
+{"player_types",		(void *)&PP_player_types,		V_INT },
+{"subs_max",			(void *)&PP_subs_max, 			V_INT },	
+{"pt_max",			(void *)&PP_pt_max, 			V_INT },	
+{"player_speed_max_delta_min",	(void *)&PP_player_speed_max_delta_min,	V_FLOAT },
+{"player_speed_max_delta_max",	(void *)&PP_player_speed_max_delta_max,	V_FLOAT },
+{"stamina_inc_max_delta_factor",(void *)&PP_stamina_inc_max_delta_factor,V_FLOAT },
+{"player_decay_delta_min",	(void *)&PP_player_decay_delta_min,	V_FLOAT },
+{"player_decay_delta_max",	(void *)&PP_player_decay_delta_max,	V_FLOAT },
+{"inertia_moment_delta_factor", (void *)&PP_inertia_moment_delta_factor,V_FLOAT },
+{"dash_power_rate_delta_min",	(void *)&PP_dash_power_rate_delta_min,	V_FLOAT },
+{"dash_power_rate_delta_max",	(void *)&PP_dash_power_rate_delta_max,	V_FLOAT },
+{"player_size_delta_factor",	(void *)&PP_player_size_delta_factor,	V_FLOAT },
+{"kickable_margin_delta_min",	(void *)&PP_kickable_margin_delta_min,	V_FLOAT },
+{"kickable_margin_delta_max",	(void *)&PP_kickable_margin_delta_max,	V_FLOAT },
+{"kick_rand_delta_factor",	(void *)&PP_kick_rand_delta_factor,	V_FLOAT },
+{"extra_stamina_delta_min",	(void *)&PP_extra_stamina_delta_min,	V_FLOAT },
+{"extra_stamina_delta_max",	(void *)&PP_extra_stamina_delta_max,	V_FLOAT },
+{"effort_max_delta_factor",	(void *)&PP_effort_max_delta_factor,	V_FLOAT },
+{"effort_min_delta_factor",	(void *)&PP_effort_min_delta_factor,	V_FLOAT },
+{"new_dash_power_rate_delta_min",(void *)&PP_new_dash_power_rate_delta_min, V_FLOAT},
+{"new_dash_power_rate_delta_max",(void *)&PP_new_dash_power_rate_delta_max, V_FLOAT},
+{"new_stamina_inc_max_delta_factor",(void *)&PP_new_stamina_inc_max_delta_factor, V_FLOAT},
+
+/* these are client params which the coach needs to know about */
+{"cycles_to_kick",              (void *)&CP_cycles_to_kick, V_FLOAT},
+{"pass_target_spd",             (void *)&CP_pass_target_speed, V_FLOAT},
+{"min_kick_speed",              (void *)&CP_min_kick_speed, V_FLOAT},
+{"avg_kick_speed",              (void *)&CP_avg_kick_speed, V_FLOAT},
+{"max_kick_speed",              (void *)&CP_max_kick_speed, V_FLOAT},
+{"min_cycles_to_kick",          (void *)&CP_min_cycles_to_kick, V_INT},
+{"avg_cycles_to_kick",          (void *)&CP_avg_cycles_to_kick, V_INT},
+{"max_cycles_to_kick",          (void *)&CP_max_cycles_to_kick, V_INT},
+{"max_consec_turns",            (void *)&CP_max_consec_turns, V_INT},
+{"min_time_turn_when_going",    (void *)&CP_min_time_turn_when_going, V_INT},
+
+{"save_action_log_level",       (void *)&CP_save_action_log_level, V_INT},
+{"save_action_freq",            (void *)&CP_save_action_freq, V_INT},
+
+
+{"SPP_max_coach_wait",          (void *)&CP_SPP_max_coach_wait, V_INT},
+{"SPP_delay",                   (void *)&CP_SPP_delay,     V_INT},
+{"SPP_max_delay",               (void *)&CP_SPP_max_delay,     V_INT},
+{"SPP_max_player_setup",        (void *)&CP_SPP_max_player_setup, V_INT},
+{"SPP_time_limit",              (void *)&CP_SPP_time_limit, V_INT},
+{"SPP_kickoff_fixed_pos_time",  (void *)&CP_SPP_kickoff_fixed_pos_time, V_INT},
+  //{"SPP_init_dash_pow",           (void *)&CP_SPP_init_dash_pow, V_INT},
+{"SPP_at_point_buffer",         (void *)&CP_SPP_at_point_buffer, V_INT},
+{"SPP_kick_dir_ang_buffer",     (void *)&CP_SPP_kick_dir_ang_buffer, V_FLOAT},
+{"SPP_kick_complete_dist",      (void *)&CP_SPP_kick_complete_dist, V_FLOAT},
+{"SPP_min_goto_dist",           (void *)&CP_SPP_min_goto_dist, V_FLOAT},
+{"SPP_kickable_buffer",         (void *)&CP_SPP_kickable_buffer, V_FLOAT},
+{"SPP_use_bpi_cyc_diff",        (void *)&CP_SPP_use_bpi_cyc_diff, V_INT},
+{"SPP_min_dribble_dist",        (void *)&CP_SPP_min_dribble_dist, V_FLOAT},
+{"SPP_max_opp_control_time",    (void *)&CP_SPP_max_opp_control_time, V_INT},
+{"SPP_min_pass_conf",           (void *)&CP_SPP_min_pass_conf, V_FLOAT},
+{"SPP_min_pass_prob",           (void *)&CP_SPP_min_pass_prob, V_FLOAT},
+{"SPP_pass_watch_for_others",   (void *)&CP_SPP_pass_watch_for_others, V_ONOFF},
+{"SPP_coach_wait_buffer",       (void *)&CP_SPP_coach_wait_buffer, V_INT},
+{"SPP_player_coach_wait_buffer",(void *)&CP_SPP_player_coach_wait_buffer, V_INT},
+{"SPP_coach_default_plan_time", (void *)&CP_SPP_coach_default_plan_time, V_INT},
+{"SPP_use_active_cycles",       (void *)&CP_SPP_use_active_cycles, V_INT},
+{"SPP_dist_to_end_for_ck",      (void *)&CP_SPP_dist_to_end_for_ck, V_FLOAT},
+{"SPP_cycles_to_kick_buffer",   (void *)&CP_SPP_cycles_to_kick_buffer, V_INT},  
+{"SPP_gk_start_buffer",         (void *)&CP_SPP_gk_start_buffer, V_FLOAT},
+{"SPP_send_mode",               (void *)&CP_SPP_send_mode, V_INT},
+{"SPP_off_dash_pow",            (void *)&CP_SPP_off_dash_pow, V_FLOAT},
+{"SPP_def_dash_pow",            (void *)&CP_SPP_def_dash_pow, V_FLOAT},
+
+{"SPP_forbid_area_buffer",      (void *)&CP_SPP_forbid_area_buffer, V_FLOAT},
+{"SPP_sideline_buffer",         (void *)&CP_SPP_sideline_buffer, V_FLOAT},
+
+{"SPP_min_pass_dist",           (void *)&CP_SPP_min_pass_dist, V_FLOAT},
+{"SPP_max_pass_dist",           (void *)&CP_SPP_max_pass_dist, V_FLOAT},
+{"SPP_max_send_dist",           (void *)&CP_SPP_max_send_dist, V_FLOAT},
+{"SPP_players_replace_nums",    (void *)&CP_SPP_players_replace_nums, V_ONOFF},
+
+{"SPP_frac_to_focus_best",      (void *)&CP_SPP_frac_to_focus_best, V_FLOAT},
+{"SPP_hillclimb_num_paths",     (void *)&CP_SPP_hillclimb_num_paths, V_INT},
+{"SPP_hillclimb_min_len",       (void *)&CP_SPP_hillclimb_min_len, V_INT},
+{"SPP_hillclimb_max_len",       (void *)&CP_SPP_hillclimb_max_len, V_INT},
+{"SPP_hillclimb_def_file",      (void *)&CP_SPP_hillclimb_def_file, V_STRING},
+
+{"OM_obs_interval",             (void *)&CP_OM_obs_interval, V_INT},
+{"OM_max_ball_steps",           (void *)&CP_OM_max_ball_steps, V_INT},
+{"OM_grid_cell_width",          (void *)&CP_OM_grid_cell_width, V_FLOAT},
+{"OM_grid_cell_height",         (void *)&CP_OM_grid_cell_height, V_FLOAT},
+{"OM_num_models",               (void *)&CP_OM_num_models, V_INT},
+{"OM_max_player_dist",          (void *)&CP_OM_max_player_dist, V_INT},
+{"OM_num_exits",                (void *)&CP_OM_num_exits, V_INT},
+
+ 
+  
+ 
+  

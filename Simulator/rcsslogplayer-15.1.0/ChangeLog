@@ -1,0 +1,1797 @@
+2012-05-23  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a minor version number. Official release 15.1.0.
+	- fixed an incorrect help message.
+
+	* qt4/main.cpp:
+	- updated the copyright message.
+
+	* m4/ax_boost_base.m4:
+	* m4/ax_boost_program_options.m4:
+	- updated autoconf macro
+
+	* qt4/image_save_dialog.cpp:
+	- fixed a compiler warning
+
+2011-08-31  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main.cpp:
+	- set "C" to the global locale.
+
+2011-05-15  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	* NEWS:
+	- updated a major version number. Official release 15.0.0.
+
+	* rcsslogplayer/Makefile.am:
+	- updated a library major version number.
+
+	* qt4/main.cpp:
+	- updated a copyright message.
+
+	* Makefile.am:
+	* configure.ac:
+	* qt4/Makefile.am:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.cpp:
+	* rcsslogplayer/types.h:
+	- supported a new parameter of rcssserver-15
+	- disabled classic logplayer.
+	- disabled glwidget by default.
+
+2010-04-23  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* m4/ax_boost_base.m4:
+	* m4/ax_boost_program_options.m4:
+	- updated autoconf macros.
+
+2010-01-29  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main.cpp:
+	- updated the copyright message.
+
+2009-12-21  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* rcsslogplayer.pro:
+	- fixed an illegal variable name.
+
+2009-12-03  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* m4/ax_boost_base.m4:
+	* m4/ax_boost_program_options.m4:
+	- updated M4 macro files.
+
+2009-11-13  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	* qt4/qt4.pro:
+	- updated point version. Official release 14.0.1.
+
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	* qt4/disp_holder.cpp:
+	* qt4/options.cpp:
+	* qt4/player_painter.cpp:
+	* qt4/player_type_dialog.cpp:
+	- fixed catch model.
+
+2009-11-06  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	* qt4/qt4.pro:
+	- updated major version. Official release 14.0.0.
+
+	* qt4/detail_dialog.cpp:
+	* qt4/player_painter.cpp:
+	* qt4/player_type_dialog.cpp:
+	* qt4/qt4.pro:
+	- added the information of kick_power_rate and
+	foul_detect_probability to PlayerTypeDialog.
+	- changed default color settings.
+
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/rcsslogplayer.pro:
+	* rcsslogplayer/types.cpp:
+	* rcsslogplayer/types.h:
+	- added a static method to initialize default player type
+	parameters.
+
+2009-11-05  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	- added catch probability information.
+	- added foul probability information.
+
+	* qt4/player_painter.cpp:
+	- added catch probability painting.
+
+2009-11-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/log_slider_tool_bar.cpp:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/player_painter.h:
+	* qt4/player_type_dialog.cpp:
+	- improved the painting policy of players' card status.
+	- added '--show-card' option.
+	- fixed duplicated short cut keys.
+
+2009-11-02  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	* qt4/ball_painter.h:
+	* qt4/field_canvas.cpp:
+	* qt4/field_canvas.h:
+	* qt4/main.cpp:
+	* qt4/player_painter.cpp:
+	* qt4/player_painter.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.cpp:
+	* rcsslogplayer/types.h:
+	* tool/rcg2xml.cpp:
+	- supported v14 features.
+	- supported opengl widget.
+
+2009-11-01  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* m4/qt.m4:
+	- improved autoconf macro for Qt.
+
+2009-08-13  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	* qt4/player_type_dialog.cpp:
+	- fixed header size of table view.
+
+2009-04-17  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	- fixed typo.
+
+2009-04-09  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* classic/Makefile.am:
+	* configure.ac:
+	- supported AX_XAW7 macro.
+	- removed variables related to rcssbase.
+
+	* m4/ax_boost_base.m4:
+	* m4/ax_boost_program_options.m4:
+	* m4/ax_xaw7.m4:
+	* m4/qt.m4:
+	- replaced symbolic link with hard copy.
+	- addec AX_XAW7 macro.
+
+2009-03-23  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	* qt4/qt4.pro:
+	- updated a point version. Official release 13.1.1.
+
+2009-03-14  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* tool/rcgconvert.cpp:
+	- fixed compiler warnings.
+
+2009-03-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/disp_holder.cpp:
+	* qt4/monitor_server.cpp:
+	* qt4/team_graphic.cpp:
+	* rcsslogplayer/parser.cpp:
+	- applied a gcc-4.4 patch provided by Hedayat Vatankhah.
+
+2008-12-18  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a minor version string. Official release 13.1.0.
+
+2008-12-16  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* tool/Makefile.am:
+	* tool/rcgconvert.cpp:
+	- removed rcg3to4 and rcg4to3 from a build target.
+	- fixed the output destination of rcgconvert's help messages.
+
+2008-12-10  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	* classic/Makefile.am:
+	* qt4/Makefile.am:
+	* rcsslogplayer/Makefile.am:
+	- fixed autoconf macros.
+	- fixed compiler options.
+
+2008-11-21  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* tool/rcgconvert.cpp:
+	* rcsslogplayer/types.cpp:
+	* tool/Makefile.am:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	- implemented rcgconvert command, which can handle any rcg
+	version.
+	- fixed a parameter precision.
+
+2008-12-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a version number string. Official release 13.0.1.
+
+	* classic/controler.cpp:
+	* classic/logplayer.cpp:
+	* rcsslogplayer/gzfstream.cpp:
+	* rcsslogplayer/parser.cpp:
+	* tool/rcgsplit.cpp:
+	- removed std:: from snprintf and strtof.
+
+2008-11-03  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* README:
+	* configure.ac:
+	- updated a version number string. Official release 13.0.0.
+
+	* classic/addr.cpp:
+	* classic/addr.hpp:
+	* classic/socket.cpp:
+	* classic/socket.hpp:
+	* classic/udpsocket.cpp:
+	* classic/udpsocket.hpp:
+	* classic/Makefile.am:
+	* classic/logplayer.cpp:
+	* classic/logplayer.h:
+	* classic/main.cpp:
+	* classic/netif.h:
+	* configure.ac:
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	* qt4/field_canvas.cpp:
+	* qt4/image_save_dialog.cpp:
+	* qt4/main_window.cpp:
+	* qt4/monitor_client.cpp:
+	* qt4/monitor_server.cpp:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/remote_monitor.cpp:
+	* qt4/team_graphic_painter.cpp:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.h:
+	* tool/rcg4to3.cpp:
+	- supported a monitor protocol version 4 and a game log format
+        version 5.
+	- disabled classc log player by default.
+
+2008-10-01  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	- added error messages for missing boost::program_options.
+
+2008-09-25  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	* qt4/qt4.pro
+	- updated a version number string, Official release 12.1.2.
+
+2008-09-17  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* classic/controler.cpp:
+	* classic/nowindow.cpp:
+	* icons/blank.xpm:
+	* icons/ff.xpm:
+	* icons/go.xpm:
+	* icons/minus.xpm:
+	* icons/next_score.xpm:
+	* icons/open.xpm:
+	* icons/play.xpm:
+	* icons/plus.xpm:
+	* icons/prev_score.xpm:
+	* icons/quit.xpm:
+	* icons/rcss.xpm:
+	* icons/rec.xpm:
+	* icons/rev.xpm:
+	* icons/rew.xpm:
+	* icons/stop.xpm:
+	* qt4/disp_holder.cpp:
+	* qt4/monitor_server.cpp:
+	* qt4/mouse_state.h:
+	* qt4/team_graphic_painter.cpp:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/util.cpp:
+	* tool/rcg2xml.cpp:
+	- fixed gcc-4.3 compilation problems.
+
+2008-08-05  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/config_dialog.cpp:
+	- fixed an illegal signal connection.
+
+2008-08-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/qt4.pro:
+	- updated a version number string.
+
+2008-08-03  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/qt4.pro:
+	- fixed a build problem with MacPorts qt-mac-4.4.0.
+
+2008-08-01  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	- fixed a default server host string.
+
+2008-07-20  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a version number string, Official release 12.1.1.
+
+	* qt4/options.cpp:
+	- fixed an illegal option name.
+
+	* qt4/team_graphic_painter.cpp:
+	- fixed a bug of the team_graphic painting for right side teams.
+
+2008-05-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/log_player.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	- implemented an auto quit mode.
+
+2008-04-17  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a version number string. Official release 12.1.0.
+
+	* qt4/log_slider_tool_bar.cpp:
+	* qt4/main_window.cpp:
+	- fixed statustip messages.
+
+	* qt4/detail_dialog.cpp:
+	* rcsslogplayer/types.
+	- fixed a defect of fucus information.
+
+	* qt4/main_window.cpp:
+	- changed menu order.
+
+	* qt4/disp_holder.cpp:
+	- fixed a defect of disp info handling in the monitor client mode.
+
+	* qt4/remote_monitor.cpp:
+	- fixed a defect of monitor client connection.
+
+2008-04-14  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	- added a simple shortcut key help dialog.
+
+	* icons/rcss.icns:
+	* qt4/qt4.pro:
+	- added an icon file for Mac OS X.
+
+	* NEWS:
+	* configure.ac:
+	* qt4/field_canvas.cpp:
+	* qt4/main_window.cpp:
+	* qt4/player_type_dialog.cpp:
+	- supported Qt-4.1.0.
+	- updated NEWS file.
+
+	* qt4/disp_holder.cpp:
+	* qt4/main_window.cpp:
+	* qt4/monitor_server.cpp:
+	* qt4/options.cpp:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	- implemented simple monitor client. Now, rcsslogplayer can be
+	used as a simple proxy server.
+
+	* configure.ac:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/log_slider_tool_bar.cpp:
+	* qt4/main_window.cpp:
+	* qt4/player_painter.cpp:
+	- supported Qt-4.2.0.
+
+	* qt4/image_save_dialog.cpp:
+	- fixed a defect about saved directory selection.
+
+2008-04-13  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	* qt4/player_painter.cpp:
+	- disabled shortcut key help message for Windows.
+	- tuned darker color.
+
+2008-04-12  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* tool/rcg2xml.cpp:
+	- fixed gcc-4.2 warning.
+
+	* classic/Makefile.am:
+	* qt4/Makefile.am:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	- added missing disttarget files.
+	- fixed incorrect settings.
+
+2008-04-11  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	- fixed defects about setting read/write.
+	- fixed defects about canvas size on the initialization.
+
+	* qt4/main_data.cpp:
+	- fixed a defect about a return characther code.
+
+	* qt4/main_window.cpp:
+	- added an automatic directry setting to open the output file.
+
+	* qt4/main_data.cpp:
+	- implemented automatic file exteantion appending for an output
+	file name.
+
+	* qt4/config_dialog.cpp:
+	- changed a layout.
+
+	* qt4/config_dialog.h:
+	* qt4/field_canvas.cpp:
+	* qt4/field_canvas.h:
+	* qt4/main_data.cpp:
+	- implemented a player selection by mouse clicking.
+
+	* qt4/log_player.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/qt4.pro:
+	* qt4/rcsslogplayer.rc:
+	* rcsslogplayer/rcsslogplayer.pro:
+	- fixed build problem on Windows.
+
+2008-04-10  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/main_window.cpp:
+	- fixed shortcut keys.
+
+	* qt4/disp_holder.cpp:
+	* qt4/log_player.cpp:
+	* qt4/main_window.cpp:
+	* qt4/monitor_client.cpp:
+	* rcsslogplayer/util.cpp:
+	* rcsslogplayer/util.h:
+	- implemented simple monitor client. Not completed yet.
+
+	* qt4/image_save_dialog.cpp:
+	* qt4/image_save_dialog.h:
+	* qt4/Makefile.am:
+	* qt4/field_canvas.cpp:
+	* qt4/main_window.cpp:
+	- added some monitor client related code, but not available yet.
+	- added an action to print available shortcut keys.
+
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/qt4.pro:
+	- implemented an image save dialog.
+
+	* classic/logplayer.cpp:
+	* qt4/Makefile.am:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	* tool/rcgsplit.cpp:
+	- fixed include dependency.
+
+	* qt4/qt4.pro:
+	* classic/Makefile.am:
+	* classic/logplayer.cpp:
+	* configure.ac:
+	* qt4/Makefile.am:
+	* qt4/team_graphic_painter.cpp:
+	* rcsslogplayer/rcsslogplayer.pro:
+	* rcsslogplayer/util.cpp:
+	- fixed build problem on Mac OS X, but cannot be build by
+	Makefile generated by configure. instead of them, use qmake.
+
+2008-04-08  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main_window.cpp:
+	- fixed an incorrect handler assignment.
+
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	- fixed bugs in v4 parser.
+	- added safe mode option
+
+	* qt4/log_slider_tool_bar.cpp:
+	- restricted press event to the left button.
+
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	* qt4/player_type_dialog.cpp:
+	* qt4/player_type_dialog.h:
+	- implemented a transparent dialog using wheel event.
+
+	* classic/logplayer.cpp:
+	* classic/logplayer.h:
+	* classic/nowindow.cpp:
+	* qt4/main_data.cpp:
+	* rcsslogplayer/rcsslogplayer.pro:
+	* tool/Makefile.am:
+	- fixed compliser warning.
+	- added profiling code.
+
+	* classic/Makefile.am:
+	* icons/rcss.ico:
+	* rcsslogplayer.pro:
+	* rcsslogplayer/rcsslogplayer.pro:
+	* qt4/disp_holder.cpp:
+	* qt4/main.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/player_painter.cpp:
+	* qt4/rcsslogplayer.rc:
+	- added qmake project files.
+
+	* qt4/main_data.cpp:
+	* rcsslogplayer/parser.cpp:
+	- added code for profiling.
+	- improved parser performance.
+
+	* configure.ac:
+	* classic/Makefile.am:
+	* classic/logplayer.cpp:
+	* qt4/disp_holder.cpp:
+	* qt4/main.cpp:
+	* qt4/main_data.cpp:
+	* qt4/main_data.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/rcsslogplay:
+	* rcsslogplayer/Makefile.am:
+	* rcsslogplayer/gzfstream.cpp:
+	* rcsslogplayer/gzfstream.h:
+	* tool/Makefile.am:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	* tool/rcgsplit.cpp:
+	- added gzfstream to the rcgparser library.
+	- added progress dialog while log parsing.
+
+2008-04-07  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/main.cpp:
+	- added copyright notice.
+
+	* classic/logplayer.cpp:
+	* classic/logplayer.h:
+	* qt4/main_window.cpp:
+	* rcsslogplayer/handler.h:
+	* tool/rcg2xml.cpp:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	* tool/rcgsplit.cpp:
+	- fixed bugs in log parsing.
+
+	* qt4/disp_holder.cpp:
+	* qt4/disp_holder.h:
+	* qt4/log_player.cpp:
+	* qt4/log_player.h:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/log_player_tool_bar.h:
+	* qt4/main_data.cpp:
+	* qt4/main_data.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/player_painter.cpp:
+	* qt4/remote_monitor.cpp:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/util.cpp:
+	* tool/rcg3to4.cpp:
+	- fixed bugs in the older version log parsing.
+	- implemented a function of data segment recording.
+
+	* qt4/draw_info_painter.cpp:
+	* qt4/draw_info_painter.h:
+	* qt4/Makefile.am:
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/disp_holder.cpp:
+	* qt4/disp_holder.h:
+	* qt4/field_canvas.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/score_board_painter.cpp:
+	* qt4/score_board_painter.h:
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	* rcsslogplayer/types.h:
+	- fixed bugs about draw info parsing.
+	- supported draw info painting.
+
+	* qt4/Makefile.am:
+	* qt4/team_graphic.cpp:
+	* qt4/team_graphic.h:
+	* qt4/team_graphic_painter.cpp:
+	* qt4/team_graphic_painter.h:
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/disp_holder.cpp:
+	* qt4/disp_holder.h:
+	* qt4/field_canvas.cpp:
+	* qt4/main_data.cpp:
+	* qt4/main_data.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/player_type_dialog.cpp:
+	- supported team_graphic data.
+
+	* qt4/log_slider_tool_bar.cpp:
+	* qt4/log_slider_tool_bar.h:
+	- implemented a click action in the cycle slider.
+
+	* rcsslogplayer/parser.cpp:
+	- fixed a defect of msg info parsing.
+
+	* qt4/ball_painter.cpp:
+	* qt4/field_canvas.cpp:
+	* qt4/field_painter.cpp:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/score_board_painter.cpp:
+	* qt4/score_board_painter.h:
+	- changed size policy for the minimum mode.
+	- added new background and foreground color for the minimum mode.
+	- renamed setting file for the Windows environment.
+	- supported QSettings in Options class.
+
+	* icons/rec.xpm:
+	* qt4/log_player.cpp:
+	* qt4/log_player.h:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/log_player_tool_bar.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	- added new option to output game log data, but not fully
+	implemented yet.
+
+	* classic/rcsslogplay_classic:
+	* qt4/rcsslogplay:
+	* qt4/Makefile.am:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	- implemented the option to invoke external monitor.
+
+	* qt4/circle_2d.cpp:
+	* qt4/circle_2d.h:
+	* qt4/line_2d.cpp:
+	* qt4/line_2d.h:
+	* qt4/log_slider_tool_bar.cpp:
+	* qt4/log_slider_tool_bar.h:
+	* qt4/Makefile.am:
+	* qt4/angle_deg.h:
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/field_canvas.cpp:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/log_player_tool_bar.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/player_painter.h:
+	* qt4/score_board_painter.cpp:
+	* qt4/score_board_painter.h:
+	- fixed several minor problems.
+	- changed the designe of minimum mode.
+	- added show-kick-accel-area option.
+
+	* qt4/ball_painter.cpp:
+	* qt4/config_dialog.cpp:
+	* qt4/detail_dialog.cpp:
+	* qt4/field_canvas.cpp:
+	* qt4/field_painter.cpp:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/score_board_painter.cpp:
+	- implemented minimum mode.
+
+2008-04-06  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	* qt4/main_data.cpp:
+	* qt4/player_painter.cpp:
+	- added tackle probability to DetailDialog.
+
+	* rcsslogplayer/types.h:
+	* rcsslogplayer/util.cpp:
+	- fixed threashold values for binary format.
+
+2008-04-05  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* qt4/disp_holder.cpp:
+	* qt4/field_canvas.cpp:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/main_data.cpp:
+	* qt4/main_window.cpp:
+	* qt4/options.cpp:
+	* qt4/score_board_painter.cpp:
+	- addec check of librcssgz.
+	- disabled monitor related actions.
+
+	* qt4/disp_holder.cpp:
+	- added the restriction to the max number of showinfo.
+
+	* classic/logplayer.cpp:
+	- fixed a bug in the save log initialization.
+
+	* qt4/monitor_server.cpp:
+	* qt4/monitor_server.h:
+	* qt4/remote_monitor.cpp:
+	* qt4/remote_monitor.h:
+	* qt4/Makefile.am:
+	* qt4/disp_holder.cpp:
+	* qt4/disp_holder.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/monitor_client.cpp:
+	* qt4/monitor_client.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	- implemented monitor server.
+
+	* icons/next_score.xpm:
+	* icons/prev_score.xpm:
+	* qt4/Makefile.am:
+	* qt4/angle_deg.cpp:
+	* qt4/angle_deg.h:
+	* qt4/detail_dialog.cpp:
+	* qt4/detail_dialog.h:
+	* qt4/log_player.cpp:
+	* qt4/log_player.h:
+	* qt4/log_player_tool_bar.cpp:
+	* qt4/log_player_tool_bar.h:
+	* qt4/monitor_client.cpp:
+	* qt4/monitor_client.h:
+	* qt4/player_type_dialog.cpp:
+	* qt4/player_type_dialog.h:
+	* qt4/vector_2d.cpp:
+	* qt4/vector_2d.h:
+	* qt4/ball_painter.cpp:
+	* qt4/ball_painter.h:
+	* qt4/config_dialog.cpp:
+	* qt4/config_dialog.h:
+	* qt4/disp_holder.cpp:
+	* qt4/disp_holder.h:
+	* qt4/field_canvas.cpp:
+	* qt4/field_canvas.h:
+	* qt4/field_painter.cpp:
+	* qt4/field_painter.h:
+	* qt4/main_data.cpp:
+	* qt4/main_data.h:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/player_painter.cpp:
+	* qt4/player_painter.h:
+	* qt4/score_board_painter.cpp:
+	* qt4/score_board_painter.h:
+	- implemented new Qt4 based logplayer.
+
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.h:
+	- added new interfaces for the convenience.
+
+	* classic/logplayer.cpp:
+	* configure.ac:
+	- tested wait().
+
+2008-04-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	- fixed enable options.
+
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	* rcsslogplayer/types.h:
+	* classic/logplayer.cpp:
+	* tool/rcg2xml.cpp:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	* tool/rcgsplit.cpp:
+	- changed parser loop policy.
+	- supported drawinfo parsing.
+
+2008-04-02  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	* rcsslogplayer/Makefile.am:
+	- fixed install directory.
+	- fixed build option checking.
+
+	* icons/blank.xpm:
+	* icons/ff.xpm:
+	* icons/go.xpm:
+	* icons/minus.xpm:
+	* icons/play.xpm:
+	* icons/plus.xpm:
+	* icons/quit.xpm:
+	* icons/rec.xpm:
+	* icons/rev.xpm:
+	* icons/rew.xpm:
+	* icons/stop.xpm:
+	* qt4/ball_painter.cpp:
+	* qt4/ball_painter.h:
+	* qt4/field_canvas.cpp:
+	* qt4/field_canvas.h:
+	* qt4/field_painter.cpp:
+	* qt4/field_painter.h:
+	* qt4/mouse_state.h:
+	* qt4/options.cpp:
+	* qt4/options.h:
+	* qt4/painter_interface.h:
+	* qt4/player_painter.cpp:
+	* qt4/player_painter.h:
+	* qt4/score_board_painter.cpp:
+	* qt4/score_board_painter.h:
+	* Makefile.am:
+	* configure.ac:
+	* qt4/Makefile.am:
+	* qt4/main_window.h:
+	* tool/Makefile.am:
+	- added files for new logplayer, but not fully implemente yet.
+
+	* classic/rcsslogplay_classic:
+	* classic/logplayer.cpp:
+	* classic/logplayer.h:
+	* classic/main.cpp:
+	- changed the policy of rcsslogplay_classic. Now,
+	rcsslogplayer_classc invokes the monitor client by itself.
+
+	* qt4:
+	* qt4/Makefile.am:
+	* qt4/main.cpp:
+	* qt4/main_window.cpp:
+	* qt4/main_window.h:
+	- added new directory.
+
+	* Makefile.am:
+	* configure.ac:
+	- cleaned up.
+	- added qt4 checking.
+
+	* tool/Makefile.am:
+	* tool/rcg3to4.cpp:
+	* tool/rcg4to3.cpp:
+	- added new tool programs.
+
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.cpp:
+	* tool/rcgsplit.cpp:
+	- fixed a parser bug.
+	- fixed a printed value precision.
+
+	* classic/Makefile.am:
+	* classic/rcsslogplay_classic:
+	* classic/rcsslogplay:
+	- renamed rcsslogplay to rcsslogplay_classic
+
+2008-04-01  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* rcsslogplayer/types.cpp:
+	* classic/file.cpp:
+	* classic/file.h:
+	* classic/rcgdatahandler.hpp:
+	* classic/rcgparser.cpp:
+	* classic/rcgparser.hpp:
+	* classic/types.h:
+	* classic/utility.h:
+	* classic/Makefile.am:
+	* classic/controler.cpp:
+	* classic/logplayer.cpp:
+	* classic/logplayer.h:
+	* classic/main.cpp:
+	* classic/netif.cpp:
+	* classic/netif.h:
+	* classic/nowindow.cpp:
+	* classic/rcsslogplay:
+	* configure.ac:
+	* rcsslogplayer/Makefile.am:
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/types.h:
+	* tool/rcgsplit.cpp:
+	- reimplemented rcsslogplayer as rcsslogplayer_classic using new
+	rcg parser library.
+
+2008-03-31  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* classic:
+	* src:
+	* Makefile.am:
+	* configure.ac:
+	- renamed directory 'src' to 'classic'.
+
+	* tool/rcg-0.1.xsd:
+	* tool/rcg.xsd:
+	* tool/rcg2xml.cpp:
+	* tool/rcgsplit.cpp:
+	* src/rcg-0.1.xsd:
+	* src/rcg.xsd:
+	* src/rcg2xml.cpp:
+	* src/rcgsplit.cpp:
+	* Makefile.am:
+	* configure.ac:
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	* rcsslogplayer/types.h:
+	* rcsslogplayer/util.cpp:
+	* src/Makefile.am:
+	- separated directory for tool programs.
+	- reimplemented tool programs.
+
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	* rcsslogplayer/types.h:
+	* rcsslogplayer/util.cpp:
+	* rcsslogplayer/util.h:
+	- added data convert utilities.
+
+	* rcsslogplayer:
+	* rcsslogplayer/Makefile.am:
+	* rcsslogplayer/handler.h:
+	* rcsslogplayer/parser.cpp:
+	* rcsslogplayer/parser.h:
+	* rcsslogplayer/types.h:
+	* rcsslogplayer/util.cpp:
+	* rcsslogplayer/util.h:
+	* Makefile.am:
+	* configure.ac:
+	- added new library directory and new rcg parser.
+
+2008-02-18  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	- updated a version number string. Official release 12.0.0.
+
+	* src/rcsslogplay:
+	- fixed a defect in some platforms.
+
+	* src/Makefile.am:
+	- updated a libtool library version number.
+
+	* rcgparserexample/ChangeLog:
+	* rcgparserexample/configure.ac:
+	* rcgparserexample/src/rcgparserexample.cpp:
+	- added a example code for the game log format version 4.
+
+	* src/rcgsplit.cpp:
+	* src/logplayer.cpp:
+	* src/logplayer.h:
+	* src/netif.cpp:
+	* src/netif.h:
+	* src/rcgparser.cpp:
+	* src/utility.h:
+	- supported the log format version 4, but need to improve several
+	things.
+
+	* src/rcg2xml.cpp:
+	* src/rcgdatahandler.hpp:
+	* src/rcgparser.cpp:
+	* src/rcgparser.hpp:
+	* src/types.h:
+	- reimplemented rcgparser and rcgdatahander for the version 4 game
+	log format.
+
+2008-02-17  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/logplayer.cpp:
+	* src/rcg2xml.cpp:
+	* src/rcgdatahandler.hpp:
+	* src/rcgparser.cpp:
+	- simply implemented rcg2xml for version 4 game log.
+
+	* src/Makefile.am:
+	* src/param.h:
+	* src/controler.cpp:
+	* src/logplayer.cpp:
+	* src/logplayer.h:
+	* src/netif.cpp:
+	* src/netif.h:
+	* src/nowindow.cpp:
+	* src/rcgdatahandler.hpp:
+	* src/rcgparser.cpp:
+	* src/rcgparser.hpp:
+	* src/types.h:
+	- removed param.h.
+
+	* src/logplayer.cpp:
+	* src/netif.cpp:
+	* src/netif.h:
+	* src/nowindow.cpp:
+	* src/types.h:
+	- removed displist_t and replaced it with std::vector.
+	- set private to member variables in Port.
+
+	* configure.ac:
+	- fixed AC_CONFIG_SRCDIR.
+
+	* netif.C:
+	* netif.cpp:
+	* file.C:
+	* file.cpp:
+	* main.C:
+	* main.cpp:
+	* logplayer.C:
+	* logplayer.cpp:
+	* nowindow.C
+	* nowindow.cpp:
+	* controler.C:
+	* controler.cpp:
+	- renamed a file extention.
+
+	* types.h
+	* rcgparser.cpp:
+	* rcgparser.hpp:
+	- added new types.
+
+2007-06-12  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* NEWS:
+	* configure.ac:
+	Updated a point version. Official Release 11.1.1.
+
+2007-06-04  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	Fixed a X11 library configuration problem on some platforms.
+
+2007-05-31  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	Fixed a build problem on some platforms.
+	Updated a minor version number. Official Release 11.1.0.
+
+2007-05-24  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* BUGS:
+	* Makefile.am:
+	* NEWS:
+	* configure.ac:
+	* rcgparserexample/ChangeLog:
+	* rcgparserexample/INSTALL:
+	* rcgparserexample/Makefile.am:
+	* rcgparserexample/aclocal.m4:
+	* rcgparserexample/configure.ac:
+	* rcgparserexample/src/Makefile.am:
+	Fiexd a defect of the wrong library linking in the
+	rcgparserexample.
+	Updated a point version number. Release Candidate 11.0.3.
+
+2007-05-23  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/controler.C:
+	Fixed a replay speed in the rewind and forward mode.
+
+2007-05-22  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	* src/logplayer.C:
+	Fixed a bug in the command line parsing. A missing return
+	statement is added to parseCmdLine()..
+	Fixed a flicker while the stop mode.
+	Updated a point version number.
+
+2007-05-21  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/logplayer.C:
+	* src/logplayer.h:
+	Fixed a build problem on some platform.
+	Fixed a defect in the wait time initialization.
+
+2007-05-15  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/controler.C:
+	* src/logplayer.C:
+	* src/logplayer.h:
+	* src/netif.C:
+	* src/nowindow.C:
+	Reimplemented a no window log player.
+	Added 'help' command for the stdin mode in the no window player.
+	Added 'load' command for the stdin mode in the no window player.
+
+	* configure.ac:
+	Increment a micro version.
+
+	* README:
+	Modified.
+
+	* PLATFORM:
+	Removed from a distribution target.
+
+	* src/logplayer.C:
+	Fixed an illegal version number data type in the file header
+	rocording.
+	Fixed an illegal size of team data recording.
+	Disabled a parameter sending.in the case of old log format.
+
+2007-05-14  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/controler.C:
+	* src/controler.h:
+	* src/logplayer.C:
+	* src/logplayer.h:
+	* src/main.C:
+	* src/nowindow.C:
+	* src/rcsslogplay:
+	More cleaned up.
+	Added signal handler for SIGINT.
+	Added a copyright notice and a version message.
+
+	* src/controler.C:
+	* src/logplayer.C:
+	* src/logplayer.h:
+	* src/netif.C:
+	* src/netif.h:
+	* src/nowindow.C:
+	* src/rcsslogplay:
+	* src/utility.h:
+:	Reimplemented as a memory based logplayer.
+
+	* src/rcsslogplay:
+	Fixed an illegal signal name.
+	Fixed an illegal subroutine name.
+
+	* src/logplayer.C:
+	* src/logplayer.h:
+	Reimplemented a command line parser with boost::program_options.
+	TODO: command line parser should be reimplemented with
+	rcssconfparser.
+
+	* configure.ac:
+	Added checking of boost::program_options.
+
+	* src/Makefile.am:
+	* src/rcgsplit.cpp:
+	Added a source of rcgsplit command.
+
+2007-04-12  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* src/controler.C:
+	* src/controler.h:
+	* src/file.C:
+	* src/file.h:
+	* src/logplayer.C:
+	* src/logplayer.h:
+	* src/main.C:
+	* src/netif.C:
+	* src/netif.h:
+	* src/nowindow.C:
+	* src/types.h:
+	Supported gzipped log file.
+
+2007-04-11  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* configure.ac:
+	Added Boost checking.
+
+2007-04-10  Hidehisa Akiyama  <akky@users.sourceforge.jp>
+
+	* Makefile.am:
+	* bootstrap:
+	* configure.ac:
+	* src/Makefile.am:
+	* src/netif.C:
+	* src/rcgparser.cpp:
+	* src/rcgparser.hpp:
+	Fixed build problems.
+	Updated major version number.
+
+2005-02-24	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./acinclude.m4
+	* ./bootstrap
+	* ./configure.ac
+	* ./acdir/ax_append_to_file.m4
+	* ./acdir/ax_dist_rpm.m4
+	* ./acdir/ax_extra_dist.m4
+	* ./acdir/ax_file_escapes.m4
+	* ./acdir/ax_mk_macros.m4
+	* ./acdir/ax_print_to_file.m4
+	* ./acdir/ax_split_version.m4
+	* ./acdir/ax_upload.m4
+	* ./src/Makefile.am
+	More release system updates
+
+2005-02-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.ac
+	Update version number
+
+2005-02-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.ac
+	Released rcsslogplayer-10.0.1
+	You can access this release by running:
+	    `cvs -d:pserver:anonymous@cvs.sourceforge.:net:/cvsroot/sserver login`
+	    `cvs -d:pserver:anonymous@cvs.sourceforge.:net:/cvsroot/sserver co -r rcsslogplayer-10_0_1 -d rcsslogplayer-10.0.1 rcsslogplayer`
+	The release will then be available in the rcsslogplayer-10.0.1 directory
+
+2005-02-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Fixed typo in CLEAN_FILES
+
+2005-02-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Added libtool.tmp to clean files
+
+2005-02-10	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.ac
+	* ./acdir/ax_add_recursive_mk_macro.m4
+	* ./acdir/ax_append_to_file.m4
+	* ./acdir/ax_dist_rpm.m4
+	* ./acdir/ax_file_escapes.m4
+	* ./acdir/ax_mk_macros.m4
+	* ./acdir/ax_print_to_file.m4
+	* ./acdir/ax_split_version.m4
+	More release system fixes
+
+2005-02-08	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./bootstrap
+	* ./configure.ac
+	* ./acdir/ax_add_am_macro.m4 (removed)
+	* ./acdir/ax_add_mk_macro.m4 (added)
+	* ./acdir/ax_add_recursive_am_macro.m4 (removed)
+	* ./acdir/ax_add_recursive_mk_macro.m4 (added)
+	* ./acdir/ax_am_macros.m4 (removed)
+	* ./acdir/ax_append_to_file.m4
+	* ./acdir/ax_cvs.m4
+	* ./acdir/ax_dist_msi.m4
+	* ./acdir/ax_dist_rpm.m4
+	* ./acdir/ax_extra_dist.m4
+	* ./acdir/ax_file_escapes.m4
+	* ./acdir/ax_install_files.m4
+	* ./acdir/ax_mk_macros.m4 (added)
+	* ./acdir/ax_print_to_file.m4
+	* ./acdir/ax_split_version.m4
+	* ./acdir/ax_upload.m4
+	* ./src/Makefile.am
+	Fixed bug in dev rules
+
+2005-01-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./rel.awk (removed)
+	Removed obsoleted file
+
+2005-01-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./NEWS
+	* ./PLATFORMS (added)
+	* ./acinclude.m4
+	* ./bootstrap
+	* ./configure.ac (added)
+	* ./configure.in (removed)
+	* ./acdir/ax_add_am_macro.m4 (added)
+	* ./acdir/ax_add_recursive_am_macro.m4 (added)
+	* ./acdir/ax_am_macros.m4 (added)
+	* ./acdir/ax_append_to_file.m4 (added)
+	* ./acdir/ax_cvs.m4 (added)
+	* ./acdir/ax_dist_msi.m4 (added)
+	* ./acdir/ax_dist_rpm.m4 (added)
+	* ./acdir/ax_extra_dist.m4 (added)
+	* ./acdir/ax_file_escapes.m4 (added)
+	* ./acdir/ax_install_files.m4 (added)
+	* ./acdir/ax_print_to_file.m4 (added)
+	* ./acdir/ax_split_version.m4 (added)
+	* ./acdir/ax_upload.m4 (added)
+	* ./src/Makefile.am
+	* ./src/netif.C
+	* ./src/types.h
+	Updated for new developer macros and removed some older configuration
+	code
+
+2005-01-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./spec.tmpl (removed)
+	* ./spec.tmpl.in (added)
+	Moved spec.tml to spec.tmpl.in
+
+2004-09-24	Itsuki Noda	<i.noda@aist.go.jp>
+
+	* ./src/netif.C
+	* ./src/types.h
+	Fixed compilation error during netif.C.
+	The error comes from changes of "rcssbase/net/addr.hpp".
+
+2003-10-29	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.in
+	* ./spec.tmpl
+	* ./src/Makefile.am
+	* ./src/rcg-0.1.xsd
+	* ./src/rcg.xsd
+	* ./src/rcg2xml.cpp
+	* ./src/rcgparser.cpp
+	Fixed bugs in xsd and in the generated output.  The output now
+	is now valid.
+
+2003-06-02	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Fixed bug in upload_rpm target
+
+2003-05-30	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.7
+
+2003-05-30	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Fixed bug in upload_bz2 target
+
+2003-05-29	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.in
+	* ./spec.tmpl
+	Updated release procedure.  make release now just does a distcheck
+	and tags the release.  You then need to check out the release and
+	run make upload_gz, upload_bz2, upload_rpm and/or upload_sprm to
+	create the distributions and upload them to SF.  You then need to
+	go to the SF page and add them to the appropriate release.
+
+2003-05-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.6
+
+2003-04-29	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.5
+
+2003-03-28	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.4
+
+2003-03-24	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/ac_lib_rcgparser.m4
+	* ./src/Makefile.am
+	* ./src/rcgparser.hpp
+	Added library detection macros and fixes some small bugs
+
+	* ./rcgparserexample/AUTHORS
+	* ./rcgparserexample/BUGS
+	* ./rcgparserexample/COPYING
+	* ./rcgparserexample/ChangeLog
+	* ./rcgparserexample/INSTALL
+	* ./rcgparserexample/Makefile.am
+	* ./rcgparserexample/NEWS
+	* ./rcgparserexample/README
+	* ./rcgparserexample/acinclude.m4
+	* ./rcgparserexample/aclocal.m4
+	* ./rcgparserexample/bootstrap
+	* ./rcgparserexample/configure.ac
+	* ./rcgparserexample/src/Makefile.am
+	* ./rcgparserexample/src/rcgparserexample.cpp
+	Added example parser.
+
+2003-03-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.3
+
+2003-03-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Added quick releases
+
+2003-03-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/Makefile.am
+	* ./src/rcsslogplay
+	Added rcsslogplay from the rcsoccersim directory
+
+2003-03-17	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/Makefile.am
+	* ./src/rcg.xsd
+	* ./src/rcg2xml.cpp
+	Converted to using xsd's.  Limit output to first 100 cycles (for
+	debugging)
+
+2003-02-25	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/rcg2xml.cpp
+	* ./src/rcgparser.cpp
+	Fixed bugs
+
+2003-02-21	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/Makefile.am
+	* ./src/rcg.dtd
+	* ./src/rcg2xml.cpp
+	Updated xml format and added dtd
+
+2003-02-21	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/logplayer.C
+	* ./src/logplayer.h
+	* ./src/nowindow.C
+	* ./src/rcgdatahandler.hpp
+	* ./src/rcgparser.cpp
+	* ./src/rcgparser.hpp
+	log player now uses the rcgparser lib
+
+2003-02-20	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./bootstrap
+	* ./configure.in
+	* ./src/Makefile.am
+	* ./src/logplayer.C
+	* ./src/logplayer.h
+	* ./src/netif.C
+	* ./src/rcg2xml.cpp
+	* ./src/rcgdatahandler.hpp
+	* ./src/rcgparser.cpp
+	* ./src/rcgparser.hpp
+	* ./src/types.h
+	Added rcg parsing lib and rcg2xml program
+
+2003-02-20	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./acinclude.m4
+	Added include for new macros
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Fixed small bug in configure.in
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.2
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.3.2
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Fixed bug in configure
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Updated release number
+
+2003-02-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	* ./src/Makefile.am
+	* ./src/file.C
+	* ./src/file.h
+	* ./src/logplayer.C
+	* ./src/netif.C
+	* ./src/netif.h
+	* ./src/nowindow.C
+	* ./src/types.h
+	Now uses rcssnet library and supports the use of
+	either sstream or strstream
+
+2003-01-30	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.2.4
+
+2003-01-30	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Fixed missing lib on Solaris 9
+
+2003-01-28	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.2.3
+
+2003-01-22	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./Makefile.am
+	* ./configure.in
+	* ./spec.tmpl
+	* ./src/Makefile.am
+	Merged from 9_2 branch
+
+2003-01-21	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.2.2
+
+2003-01-21	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.in
+	* ./spec.tmpl
+	* ./src/Makefile.am
+	Added rpm building support
+
+2003-01-10	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.2.1
+
+2003-01-02	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.2.0
+
+2003-01-02	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	* ./src/Makefile.am
+	* ./src/controler.C
+	* ./src/controler.h
+	* ./src/logplayer.C
+	* ./src/logplayer.h
+	* ./src/nowindow.C
+	Fixed linking problems on Cygwin and logplayer will now compile if
+	X is not available
+
+2003-01-02	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./Makefile.am
+	* ./NEWS
+	* ./configure.in
+	Merged 9_1 branch
+
+2002-12-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./Makefile.am
+	* ./NEWS
+	Merged 9_1 branch
+
+2002-12-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.1.5
+
+2002-12-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Fixed bugs in branching targets
+
+2002-12-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./Makefile.am
+	* ./rel.awk
+	Merged 9_1 branch
+
+2002-12-10	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Added branching targets
+
+2002-12-04	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	Merged 9.1.4 branch
+
+2002-12-03	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.1.4
+
+2002-11-19	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./.cvsignore
+	added addlog
+
+	* ./Makefile.am
+	Fixed bug in addlog
+
+2002-11-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	* ./Makefile.am
+	* ./NEWS
+	* ./configure.in
+	* ./src/controler.C
+	* ./src/file.C
+	* ./src/file.h
+	* ./src/logplayer.C
+	* ./src/logplayer.h
+	* ./src/main.C
+	* ./src/netif.C
+	* ./src/nowindow.C
+	* ./src/utility.h
+	Merged sstream branch
+
+	* ./configure.in
+	Updated version
+
+2002-11-15	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./ChangeLog
+	Moved changes from rcsoccersim/ChangeLog.base
+
+	* ./Makefile.am
+	addlog no longer creates empty logs
+
+2002-11-15	Michael Gollin	<michaelgollin@users.sourceforge.net>
+
+	* ./src/controler.C
+	* ./src/file.C
+	* ./src/file.h
+	* ./src/logplayer.C
+	* ./src/logplayer.h
+	* ./src/main.C
+	* ./src/netif.C
+	* ./src/nowindow.C
+	* ./src/utility.h
+	removed warnings concerning deprecated header files (gcc 3.2)
+
+2002-11-15	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	tag target now creates branch
+
+2002-10-25	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/.cvsignore
+	Added rcsslogplayer to cvs ignore
+
+2002-10-25	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./.cvsignore
+	* ./src/.cvsignore
+	Added cvs ignore files
+
+2002-10-25	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Updated addlog target
+
+	* ./bootstrap
+	Removed auto* generated files and added bootstrap
+
+2002-10-24	Oliver Obst	<fruit@robolog.org>
+
+	* ./src/logplayer.C
+	Fixes for gcc 3.2
+
+2002-07-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-9.0.2
+
+2002-07-11	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/nowindow.C
+	Fixed compilation problem on Solaris 8
+
+2002-06-18	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./configure.in
+	Released rcsslogplayer-8.05.6
+
+2002-06-05	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.in
+	Fixed problems with old awks.
+
+2002-05-23	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./NEWS
+	* ./configure
+	* ./configure.in
+	Updated version number and NEWS
+
+2002-05-22	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./src/types.h
+	Added new playmodes
+
+2002-04-16	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	* ./configure.in
+	* ./rel.awk
+	Moved release number into version number
+
+2002-04-09	Tom Howard	<tomhoward@users.sf.net>
+
+	* ./Makefile.am
+	Added 'make addlog'
+
+	* ./src/logplayer.C
+	Fixed (hopefully) compilation problems on some solaris platforms
+
+2002-03-27	Automatic	<sserver-admin@lists.sf.net>
+
+  	* ./ChangeLog
+	Released rcsslogplayer-8.03-rel_2
+
+
+2002-01-14	Tom Howard	<tomhoward@users.sf.net>
+
+	* configure.in
+	Update version number
+
+[8.02]
+	Logplayer now compiles with gcc-3.0
+
+	Fixed bug in using v1 monitor with a logplayer reading a v3 log
+[0.2]
+	Logplayer can read gzipped game logs
+
+	Fixed `nowindow' mode to allow v2 monitors
+
+[0.1]
+	Copied from the logplayer that comes with soccer server 7.10
+
+	Converted it to use automake and autoconf
