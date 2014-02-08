@@ -38,8 +38,8 @@ or implied, of Rafael Muñoz Salinas.
 
 #include "aruco.h"
 #include "cvdrawingutils.h"
-#include "blob.h"
-#include "BlobResult.h"
+//#include "blob.h"
+//#include "BlobResult.h"
 
 using namespace cv;
 using namespace aruco;
@@ -53,7 +53,7 @@ int sHigh = 149;
 int vHigh = 169;
 
 
-int idAssocMat[1024] = {0};
+int idAssocMat[1024] = {1};
 
 #define mqtt_host "localhost"
 #define mqtt_port 1883
@@ -89,7 +89,7 @@ int main(int argc,char **argv)
     idAssocMat[341]  = 11;
     idAssocMat[682]  = 12;
 
-    system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
+    //system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
 
     char clientid[64]="FotbalRobotic.ro Tracking Server";
     mosquitto_lib_init();
@@ -213,6 +213,7 @@ int main(int argc,char **argv)
             coords.x  =  ballPosition.x;
             coords.y  =  ballPosition.y;
             coords.angle = 0;
+            cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
             coords.timestamp = std::time(0);
             mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
         }
@@ -221,7 +222,7 @@ int main(int argc,char **argv)
 
         //read camera parameters if specifed
 
-        CamParam.readFromXMLFile("/home/cotty/dev/arutest/camera.yml");
+        CamParam.readFromXMLFile("/home/bogdan/dev/FotbalRobotic/TrackingServer/arutest/camera.yml");
         //resizes the parameters to fit the size of the input image
         CamParam.resize( InImage.size());
         bitwise_not(InImage, InImage);
