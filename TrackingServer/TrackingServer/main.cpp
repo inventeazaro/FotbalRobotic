@@ -35,9 +35,10 @@ or implied, of Rafael Muñoz Salinas.
 #include <ctime>
 #include <mosquitto.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-#include "aruco.h"
-#include "cvdrawingutils.h"
+#include "aruco/aruco.h"
+#include "aruco/cvdrawingutils.h"
 
 using namespace cv;
 using namespace aruco;
