@@ -38,8 +38,6 @@ or implied, of Rafael Muñoz Salinas.
 
 #include "aruco.h"
 #include "cvdrawingutils.h"
-//#include "blob.h"
-//#include "BlobResult.h"
 
 using namespace cv;
 using namespace aruco;
@@ -59,17 +57,15 @@ int idAssocMat[1024] = {1};
 #define mqtt_port 1883
 
 struct robotCoords {
-    int id; // id robot - 1..10
-    int x;  // 0...800  - relative la terenul de joc
-    int y;  // 0...600
+    int id;    // id robot - 1..10
+    int x;     // 0...800  - relative la terenul de joc
+    int y;     // 0...600
     int angle; // unghi fata de baza ringuluieu as fi avut nevoie de joi pana duminica in special
     int timestamp; // timpul cand au fost calculate - UNIXTIME - Ex: 1352460922
 };
 
 struct mosquitto *mosq;
 
-
-//#define TEST_FILE "/home/cotty/dev/arutest/sonyip.png"
 #define TEST_FILE "/home/cotty/dev/arutest/test.png"
 
 int main(int argc,char **argv)
@@ -89,7 +85,8 @@ int main(int argc,char **argv)
     idAssocMat[341]  = 11;
     idAssocMat[682]  = 12;
 
-    //system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
+    // TODO Find a better solution for this
+    // system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
 
     char clientid[64]="FotbalRobotic.ro Tracking Server";
     mosquitto_lib_init();
