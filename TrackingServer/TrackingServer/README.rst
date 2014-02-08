@@ -24,6 +24,16 @@ cd build
 cmake ..
 make
 sudo make install 
+
+install opencv from the ubuntu repository (should install everything needed)
+
+sudo apt-get install libcv-dev libopencv-dev
+
+install qtcreator (optional)
+
+sudo apt-get install qtcreator
+
+
  
 
 MacOSX:
