@@ -262,7 +262,7 @@ int main(int argc,char **argv)
         imshow("verde",VerdeMask);
         //imshow("ceva2", BallMask2);
         //read camera parameters if specifed
-        CamParam.readFromXMLFile("/home/bogdan/dev/FotbalRobotic/TrackingServer/TrackingServer/camera.yml");
+        CamParam.readFromXMLFile("/etc/fr/camera.yml");
         //resizes the parameters to fit the size of the input image
         CamParam.resize( InImage.size());
         bitwise_not(InImage, InImage);
