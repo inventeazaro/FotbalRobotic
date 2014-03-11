@@ -137,14 +137,19 @@ int main(int argc,char **argv)
 
         //ATENTIE! AICI SETAM LA 1080 CU 720. IN CAMERA PARAMETERS MAI JOS AVEM 640 CU 480 PE CARE LE MODIFICAM LA 1080 CU 720??
         //intrebare: de ce folosim camparam?
-        vreader.set(CV_CAP_PROP_FRAME_WIDTH, 800);
-        vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
-        vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 800);
-        vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
+        vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 
         //TODO important shit!
         //system("guvcview -d /dev/video1 -f MJPEG -s 128x72 -o");
         //system("guvcview -d /dev/video2 -f MJPEG -s 128x72 -o");
+
+        int onces = 0;
+        int onced = 0;
+        int la0s = 0;
+        int la0d = 0;
 
         while(1) {
 
@@ -213,7 +218,9 @@ int main(int argc,char **argv)
         float ballArea2 = ballMoments2.m00;
         float verdeArea = verdeMoments.m00;
         float verdeArea2 = verdeMoments2.m00;
-        int cpsx=0, cpsy=0, cpdx=0, cpdy=0;
+        int cps1x=0, cps1y=0, cps2x=0, cps2y=0;
+
+        int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
 
         if(ballArea > 10) {
             ballPosition.x = ballMoments.m10/ballArea;
@@ -221,8 +228,8 @@ int main(int argc,char **argv)
             //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
             robotCoords coords;
             coords.id = 0; // Id Ball
-            coords.x  =  ballPosition.x;
-            coords.y  =  ballPosition.y;
+            coords.y  =  ballPosition.x;
+            coords.x  =  ballPosition.y;
             coords.angle = 0;
            // cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
             coords.timestamp = std::time(0);
@@ -235,23 +242,23 @@ int main(int argc,char **argv)
                 //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
                 robotCoords coords;
                 coords.id = 0; // Id Ball
-                coords.x  =  ballPosition.x;
-                coords.y  =  ballPosition.y;
+                coords.y  =  ballPosition.x;
+                coords.x  =  ballPosition.y;
                 coords.angle = 0;
-                cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
+            //    cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
                 coords.timestamp = std::time(0);
                 mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
             }
 
         if (verdeArea > 20) {
-            verdePosition.x = verdeMoments.m10/verdeArea;
-            verdePosition.y = verdeMoments.m01/verdeArea;
+            verdePosition.y = verdeMoments.m10/verdeArea;
+            verdePosition.x = verdeMoments.m01/verdeArea;
             circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
         }
 
         if (verdeArea2 > 20) {
-            verdePosition2.x = verdeMoments2.m10/verdeArea2;
-            verdePosition2.y = verdeMoments2.m01/verdeArea2;
+            verdePosition2.y = verdeMoments2.m10/verdeArea2;
+            verdePosition2.x = verdeMoments2.m01/verdeArea2;
             circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
         }
 
@@ -276,6 +283,43 @@ int main(int argc,char **argv)
         //cum consider ca ar fi bine: fac de doua ori, dar a doua oara adaug un parametru la coordonate.
 
         //for each marker, draw info and its boundaries in the image
+        int nr = 0;
+        if (onces ==0)
+         {
+            for (unsigned int i=0;i<Markers.size();i++) {
+                if (Markers[i].id == 1 || Markers[i].id == 21)
+                {
+                Markers[i].draw(InImage,Scalar(0,0,255),2);
+
+                cv::Point2f markerCenter, p1, p2;
+
+                markerCenter = Markers[i].getCenter();
+                if (markerCenter.x !=0 && markerCenter.y !=0) {
+                    if (Markers[i].id == 1)
+                    {
+                        cps1y = markerCenter.x;
+                        cps1x = markerCenter.y;
+                        nr++;
+                    }
+                    if (Markers[i].id == 21)
+                    {
+                        cps2y = markerCenter.x;
+                        cps2x = markerCenter.y;
+                        nr++;
+                    }
+                }
+                   // cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
+
+                   // cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
+                }
+            }
+        if (nr == 2) {
+            onces = 1;
+            la0s = (cps1x + cps2x) / 2;
+            }
+        }
+
+
         for (unsigned int i=0;i<Markers.size();i++) {
             //cout<<Markers[i]<<endl;
             Markers[i].draw(InImage,Scalar(0,0,255),2);
@@ -287,16 +331,17 @@ int main(int argc,char **argv)
             robotCoords coords;
 
             markerCenter = Markers[i].getCenter();
-            if (Markers[i].id != 1) {  //daca nu este markerul de langa poarta
+            if (Markers[i].id != 1)
+                if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
 
                 coords.id = idAssocMat[Markers[i].id];
-                coords.x  = markerCenter.x;
-                coords.y  = markerCenter.y;
-
-                if (coords.x > cpsx && coords.x < verdePosition.x) {
+                coords.y  = markerCenter.x;
+                coords.x  = markerCenter.y;
+                if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
+                if (coords.x > la0s && coords.x < verdePosition.x) {
 
                     //scalare coordonate
-                    coords.x = (coords.x - cpsx) * 500 / (verdePosition.x - cpsx);
+                    coords.x = (coords.x - la0s) * 700 / (verdePosition.x - la0s);
 
                     p1.x = Markers[i][0].x;
                     p1.y = Markers[i][0].y;
@@ -308,22 +353,55 @@ int main(int argc,char **argv)
                     angle= atan2(p1.x-p2.x, p1.y-p2.y);
                     angle = angle*180/3.1415 + 180;
                     cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-
+                    if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
                     coords.angle = angle;
                     coords.timestamp = std::time(0);
                     mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
                 }
             }
-            else {
-                //salvam coordonatele portii vazute de camera 1, adica poarta din stanga
-                cpsx = markerCenter.x;
-                cpsy = markerCenter.y;
-            }
+
         }
 
         Markers.clear();
 
         MDetector.detect(InImage2,Markers,CamParam,MarkerSize); //este posibil sa fie bine asa, daca nu reinitializeaza vectorul markers. altfel va fi mai enervant
+
+        int nr2 = 0;
+        if (onced ==0)
+         {
+            for (unsigned int i=0;i<Markers.size();i++) {
+                if (Markers[i].id == 1 || Markers[i].id == 21)
+                {
+                Markers[i].draw(InImage,Scalar(0,0,255),2);
+
+                cv::Point2f markerCenter, p1, p2;
+
+                markerCenter = Markers[i].getCenter();
+                if (markerCenter.x !=0 && markerCenter.y !=0) {
+                    if (Markers[i].id == 1)
+                    {
+                        cpd1y = markerCenter.x;
+                        cpd1x = markerCenter.y;
+                        nr2++;
+                    }
+                    if (Markers[i].id == 21)
+                    {
+                        cpd2y = markerCenter.x;
+                        cpd2x = markerCenter.y;
+                        nr2++;
+                    }
+                }
+                   // cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
+
+                   // cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
+                }
+            }
+        if (nr2 == 2) {
+            onced = 1;
+            la0d = (cpd1x + cpd2x) / 2;
+            }
+        }
+
 
         //for each marker, draw info and its boundaries in the image
         for (unsigned int i=0;i<Markers.size();i++) {
@@ -337,33 +415,37 @@ int main(int argc,char **argv)
             robotCoords coords;
 
             markerCenter = Markers[i].getCenter();
-            coords.id = idAssocMat[Markers[i].id];
-            coords.x  = markerCenter.x;
-            coords.y  = markerCenter.y;
+            if (Markers[i].id != 1)
+                if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
 
+                coords.id = idAssocMat[Markers[i].id];
+                coords.y  = markerCenter.x;
+                coords.x  = markerCenter.y;
+                if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
+                if (coords.x > la0d && coords.x < verdePosition.x) {
 
-            p1.x = Markers[i][0].x;
-            p1.y = Markers[i][0].y;
-            p2.x = Markers[i][1].x;
-            p2.y = Markers[i][1].y;
+                    //scalare coordonate
+                    coords.x = (coords.x - la0d) * 700 / (verdePosition.x - la0d);
 
-            pd = p1.y-p2.y/p1.x-p2.x;
+                    p1.x = Markers[i][0].x;
+                    p1.y = Markers[i][0].y;
+                    p2.x = Markers[i][1].x;
+                    p2.y = Markers[i][1].y;
 
-            angle= atan2(p1.x-p2.x, p1.y-p2.y);
-            angle = angle*180/3.1415 + 180;
-            cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                    pd = p1.y-p2.y/p1.x-p2.x;
 
-
-             //coords.angle = Markers[i].Rvec.ptr<float>(0)[0] * 180/3.1415;
-             coords.angle = angle;
-
-//            Markers[i].OgreGetPoseParameters(position, orientation);
-//            cout<<"Id: "<<coords.id<<"Orientation: "<<orientation[0]<<":"<<orientation[1]<<":"<<orientation[2]<<":"<<orientation[3];
-//            cout<<"Id: "<<coords.id<<"Angle: "<<coords.angle<<endl;
-            coords.timestamp = std::time(0);
-            mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+                    angle= atan2(p1.x-p2.x, p1.y-p2.y);
+                    angle = angle*180/3.1415 + 180;
+                    cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                    if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+                    coords.angle = angle;
+                    coords.timestamp = std::time(0);
+                    mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+                }
+            }
         }
 
+        Markers.clear();
         // Call mosquitto
         rc = mosquitto_loop(mosq, 1, 50);
 
