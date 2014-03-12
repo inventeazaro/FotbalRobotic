@@ -36,6 +36,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <mosquitto.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "aruco/aruco.h"
 #include "aruco/cvdrawingutils.h"
@@ -49,6 +50,9 @@ int vLow = 99;
 int hHigh = 141;
 int sHigh = 149;
 int vHigh = 169;
+
+int alfa = 150;
+int beta = 50;
 
 //adaugat parametrii culoare verde
 int hLow_00 = 70;
@@ -118,7 +122,7 @@ int main(int argc,char **argv)
         cv::Mat InImage2;
         //try opening first as video
         VideoCapture vreader(1);
-        VideoCapture vreader2(2);
+        VideoCapture vreader2(0);
 
 
         const char mainWindow[] = "FotbalRobotic Tracker";
@@ -137,10 +141,10 @@ int main(int argc,char **argv)
 
         //ATENTIE! AICI SETAM LA 1080 CU 720. IN CAMERA PARAMETERS MAI JOS AVEM 640 CU 480 PE CARE LE MODIFICAM LA 1080 CU 720??
         //intrebare: de ce folosim camparam?
-        vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
-        vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-        vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
-        vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        //vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        //vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        //vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        //vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 
         //TODO important shit!
         //system("guvcview -d /dev/video1 -f MJPEG -s 128x72 -o");
@@ -274,6 +278,15 @@ int main(int argc,char **argv)
         CamParam.resize( InImage.size());
         bitwise_not(InImage, InImage);
         bitwise_not(InImage2, InImage2);
+
+
+        //filtru sharpen
+        cv::Mat tmp1,tmp2;
+        cv::GaussianBlur(InImage, tmp1, cv::Size(3,3), 5);
+        cv::addWeighted(InImage, alfa/100, tmp1, -beta/100, 0, InImage);
+        cv::createTrackbar("alfa", mainWindow, &alfa, 300, NULL);
+        cv::createTrackbar("beta", mainWindow, &beta, 300, NULL);
+
         //read marker size if specified
         //Ok, let's detect
         MDetector.getCandidates();
