@@ -44,15 +44,22 @@ or implied, of Rafael Muñoz Salinas.
 using namespace cv;
 using namespace aruco;
 
-int hLow = 116;
-int sLow = 73;
-int vLow = 99;
-int hHigh = 141;
-int sHigh = 149;
-int vHigh = 169;
+int hLow1 = 116;
+int sLow1 = 73;
+int vLow1 = 99;
+int hHigh1 = 141;
+int sHigh1 = 149;
+int vHigh1 = 169;
 
-int alfa = 150;
-int beta = 50;
+int hLow2 = 116;
+int sLow2 = 73;
+int vLow2 = 99;
+int hHigh2 = 141;
+int sHigh2 = 149;
+int vHigh2 = 169;
+
+int alfa = 150, alfa2 = 150;
+int beta = 50, beta2 = 50;
 
 //adaugat parametrii culoare verde
 int hLow_00 = 70;
@@ -80,7 +87,346 @@ struct robotCoords {
 
 struct mosquitto *mosq;
 
-#define TEST_FILE "/home/cotty/dev/arutest/test.png"
+const char mainWindow1[] = "FotbalRobotic Tracker camera 1";
+const char mainWindowsettings1[] = "FotbalRobotic Tracker settings camera 1";
+const char mainWindow2[] = "FotbalRobotic Tracker camera 2";
+
+cv::Mat InImage;
+cv::Mat InImage2;
+
+cv::Mat HSVImage;
+cv::Mat BallMask;
+cv::Mat HSVImage2;
+cv::Mat BallMask2;
+cv::Mat VerdeMask;
+cv::Mat VerdeMask2;
+
+int mid = 0;
+int rc = 0;
+
+int onces = 0;
+int onced = 0;
+int la0s = 0;
+int la0d = 0;
+
+aruco::CameraParameters CamParam;
+MarkerDetector MDetector;
+vector<Marker> Markers, Markers2;
+float MarkerSize=10; //0.008;
+
+void camera1 () {
+
+    cv::createTrackbar("H Low", mainWindowsettings1, &hLow1, 180, NULL);
+    cv::createTrackbar("S Low", mainWindowsettings1, &sLow1, 255, NULL);
+    cv::createTrackbar("V Low", mainWindowsettings1, &vLow1, 255, NULL);
+    cv::createTrackbar("H High", mainWindowsettings1, &hHigh1, 180, NULL);
+    cv::createTrackbar("S High", mainWindowsettings1, &sHigh1, 255, NULL);
+    cv::createTrackbar("V High", mainWindowsettings1, &vHigh1, 255, NULL);
+
+    cv::Scalar lowThreshold(hLow1, sLow1, vLow1, 0);   //pt minge
+    cv::Scalar highThreshold(hHigh1, sHigh1, vHigh1, 0);
+
+    cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
+    cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
+
+    cv::cvtColor(InImage, HSVImage, CV_RGB2HSV);
+
+    cv::inRange(HSVImage, lowThreshold, highThreshold, BallMask);
+
+    cv::inRange(HSVImage, lowThreshold_00, highThreshold_00, VerdeMask);   //varde mask
+
+    Moments ballMoments = moments(BallMask, false);
+
+    Moments verdeMoments = moments(VerdeMask, false);
+
+    Point   ballPosition;
+
+    Point   verdePosition;
+
+    float ballArea = ballMoments.m00;
+    float verdeArea = verdeMoments.m00;
+    int cps1x=0, cps1y=0, cps2x=0, cps2y=0;
+
+    int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
+
+    if(ballArea > 10) {
+        ballPosition.x = ballMoments.m10/ballArea;
+        ballPosition.y = ballMoments.m01/ballArea;
+        //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
+        robotCoords coords;
+        coords.id = 0; // Id Ball
+        coords.y  =  ballPosition.x;
+        coords.x  =  ballPosition.y;
+        coords.angle = 0;
+       // cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
+        coords.timestamp = std::time(0);
+        mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+    }
+
+    if (verdeArea > 20) {
+        verdePosition.y = verdeMoments.m10/verdeArea;
+        verdePosition.x = verdeMoments.m01/verdeArea;
+        circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
+    }
+    CamParam.readFromXMLFile("/etc/fr/camera.yml");
+
+    //facem regula de trei simpla astfel incat sa avem 0-500, 501-1000 coordonatele terenului.
+    //mai trebuie sa luam coordonatele portilor pentru a stii exact unde este 0 si respectiv 1000
+
+    imshow("ceva", BallMask);
+    imshow("verde",VerdeMask);
+    bitwise_not(InImage, InImage);
+
+    //filtru sharpen
+    cv::Mat tmp1,tmp2;
+    cv::GaussianBlur(InImage, tmp1, cv::Size(3,3), 5);
+    cv::addWeighted(InImage, alfa/100, tmp1, -beta/100, 0, InImage);
+    cv::createTrackbar("alfa", mainWindowsettings1, &alfa, 300, NULL);
+    cv::createTrackbar("beta", mainWindowsettings1, &beta, 300, NULL);
+
+    //read marker size if specified
+    //Ok, let's detect
+    MDetector.getCandidates();
+    MDetector.setMinMaxSize(0.005, 0.5);
+
+    MDetector.detect(InImage,Markers,CamParam,MarkerSize);
+    //cum consider ca ar fi bine: fac de doua ori, dar a doua oara adaug un parametru la coordonate.
+
+    //for each marker, draw info and its boundaries in the image
+    int nr = 0;
+    if (onces ==0)
+     {
+        for (unsigned int i=0;i<Markers.size();i++) {
+            if (Markers[i].id == 1 || Markers[i].id == 21)
+            {
+            Markers[i].draw(InImage,Scalar(0,0,255),2);
+           // const char mainWindow[] = "FotbalRobotic Tracker";
+
+            cv::Point2f markerCenter, p1, p2;
+
+            markerCenter = Markers[i].getCenter();
+            if (markerCenter.x !=0 && markerCenter.y !=0) {
+                if (Markers[i].id == 1)
+                {
+                    cps1y = markerCenter.x;
+                    CamParam.readFromXMLFile("/etc/fr/camera.yml");
+                    cps1x = markerCenter.y;
+                    nr++;
+                }
+                if (Markers[i].id == 21)
+                {
+                    cps2y = markerCenter.x;
+                    cps2x = markerCenter.y;
+                    nr++;
+                }
+            }
+               // cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
+
+               // cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
+            }
+        }
+    if (nr == 2) {
+        onces = 1;
+        la0s = (cps1x + cps2x) / 2;
+        }
+    }
+
+
+    for (unsigned int i=0;i<Markers.size();i++) {
+        //cout<<Markers[i]<<endl;
+        Markers[i].draw(InImage,Scalar(0,0,255),2);
+        double position[3];
+        double orientation[4];
+
+        cv::Point2f markerCenter, p1, p2;
+        double pd, angle;
+        robotCoords coords;
+
+        markerCenter = Markers[i].getCenter();
+        if (Markers[i].id != 1)
+            if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
+
+            coords.id = idAssocMat[Markers[i].id];
+            coords.y  = markerCenter.x;
+            coords.x  = markerCenter.y;
+            if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
+            if (coords.x > la0s && coords.x < verdePosition.x) {
+
+                //scalare coordonate
+                coords.x = (coords.x - la0s) * 700 / (verdePosition.x - la0s);
+
+                p1.x = Markers[i][0].x;
+                p1.y = Markers[i][0].y;
+                p2.x = Markers[i][1].x;
+                p2.y = Markers[i][1].y;
+
+                pd = p1.y-p2.y/p1.x-p2.x;
+
+                angle= atan2(p1.x-p2.x, p1.y-p2.y);
+                angle = angle*180/3.1415 + 180;
+                cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+                coords.angle = angle;
+                coords.timestamp = std::time(0);
+                mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+            }
+        }
+
+    }
+
+
+}
+
+void camera2() {
+    cv::createTrackbar("H Low", mainWindow2, &hLow2, 180, NULL);
+    cv::createTrackbar("S Low", mainWindow2, &sLow2, 255, NULL);
+    cv::createTrackbar("V Low", mainWindow2, &vLow2, 255, NULL);
+    cv::createTrackbar("H High", mainWindow2, &hHigh2, 180, NULL);
+    cv::createTrackbar("S High", mainWindow2, &sHigh2, 255, NULL);
+    cv::createTrackbar("V High", mainWindow2, &vHigh2, 255, NULL);
+
+    cv::Scalar lowThreshold(hLow2, sLow2, vLow2, 0);   //pt minge
+    cv::Scalar highThreshold(hHigh2, sHigh2, vHigh2, 0);
+
+    cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
+    cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
+
+    cv::cvtColor(InImage2, HSVImage2, CV_RGB2HSV);
+
+    cv::inRange(HSVImage2, lowThreshold, highThreshold, BallMask2);
+
+    cv::inRange(HSVImage2, lowThreshold_00, highThreshold_00, VerdeMask2);   //varde mask
+
+    Moments ballMoments2 = moments(BallMask2, false);
+
+    Moments verdeMoments2 = moments(VerdeMask2, false);
+
+    Point   ballPosition;
+
+    Point   verdePosition2;
+
+    float ballArea2 = ballMoments2.m00;
+    float verdeArea2 = verdeMoments2.m00;
+    int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
+
+    if(ballArea2 > 10) {
+            ballPosition.x = ballMoments2.m10/ballArea2;
+            ballPosition.y = ballMoments2.m01/ballArea2;
+            //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
+            robotCoords coords;
+            coords.id = 0; // Id Ball
+            coords.y  =  ballPosition.x;
+            coords.x  =  ballPosition.y;
+            coords.angle = 0;
+        //    cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
+            coords.timestamp = std::time(0);
+            mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+        }
+
+    if (verdeArea2 > 20) {
+        verdePosition2.y = verdeMoments2.m10/verdeArea2;
+        verdePosition2.x = verdeMoments2.m01/verdeArea2;
+        circle(InImage, verdePosition2, 27.3, Scalar(255, 255, 255), 2);
+    }
+
+    //facem regula de trei simpla astfel incat sa avem 0-500, 501-1000 coordonatele terenului.
+    //mai trebuie sa luam coordonatele portilor pentru a stii exact unde este 0 si respectiv 1000
+
+    bitwise_not(InImage2, InImage2);
+
+    //filtru sharpen
+    cv::Mat tmp1,tmp2;
+    cv::GaussianBlur(InImage2, tmp1, cv::Size(3,3), 5);
+    cv::addWeighted(InImage2, alfa2/100, tmp1, -beta2/100, 0, InImage2);
+    cv::createTrackbar("alfa", mainWindow2, &alfa2, 300, NULL);
+    cv::createTrackbar("beta", mainWindow2, &beta2, 300, NULL);
+
+    //read marker size if specified
+    //Ok, let's detect
+    MDetector.getCandidates();
+    MDetector.setMinMaxSize(0.005, 0.5);
+
+    MDetector.detect(InImage2,Markers2,CamParam,MarkerSize); //este posibil sa fie bine asa, daca nu reinitializeaza vectorul markers. altfel va fi mai enervant
+
+    int nr2 = 0;
+    if (onced ==0)
+     {
+        for (unsigned int i=0;i<Markers2.size();i++) {
+            if (Markers2[i].id == 1 || Markers2[i].id == 21)
+            {
+            Markers2[i].draw(InImage,Scalar(0,0,255),2);
+
+            cv::Point2f markerCenter, p1, p2;
+
+            markerCenter = Markers2[i].getCenter();
+            if (markerCenter.x !=0 && markerCenter.y !=0) {
+                if (Markers2[i].id == 1)
+                {
+                    cpd1y = markerCenter.x;
+                    cpd1x = markerCenter.y;
+                    nr2++;
+                }
+                if (Markers2[i].id == 21)
+                {
+                    cpd2y = markerCenter.x;
+                    cpd2x = markerCenter.y;
+                    nr2++;
+                }
+            }
+                cerr<<"poarta 1 stanga: x: "<<cpd1x<<" y: "<<cpd1y<<endl;
+
+                cerr<<"poarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
+            }
+        }
+    if (nr2 == 2) {
+        onced = 1;
+        la0d = (cpd1x + cpd2x) / 2;
+        }
+    }
+
+    //for each marker, draw info and its boundaries in the image
+    for (unsigned int i=0;i<Markers2.size();i++) {
+        //cout<<Markers2[i]<<endl;
+        Markers2[i].draw(InImage2,Scalar(0,0,255),2);
+        double position[3];
+        double orientation[4];
+
+        cv::Point2f markerCenter, p1, p2;
+        double pd, angle;
+        robotCoords coords;
+
+        markerCenter = Markers2[i].getCenter();
+        if (Markers2[i].id != 1)
+            if (Markers2[i].id != 21) {  //daca nu este markerul de langa poarta
+
+            coords.id = idAssocMat[Markers2[i].id];
+            coords.y  = markerCenter.x;
+            coords.x  = markerCenter.y;
+           // cerr<<coords.id;
+            if (coords.id ==6) cerr<<"coord nemodif x: "<<coords.x;
+            if (coords.x > la0d && coords.x < verdePosition2.x) {
+
+                //scalare coordonate
+                coords.x = (coords.x - la0d) * 700 / (verdePosition2.x - la0d);
+
+                p1.x = Markers2[i][0].x;
+                p1.y = Markers2[i][0].y;
+                p2.x = Markers2[i][1].x;
+                p2.y = Markers2[i][1].y;
+
+                pd = p1.y-p2.y/p1.x-p2.x;
+
+                angle= atan2(p1.x-p2.x, p1.y-p2.y);
+                angle = angle*180/3.1415 + 180;
+                cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                if (coords.id == 6) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+                coords.angle = angle;
+                coords.timestamp = std::time(0);
+                mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
+            }
+        }
+    }
+}
 
 int main(int argc,char **argv)
 {
@@ -113,31 +459,13 @@ int main(int argc,char **argv)
 
     try
     {
-        aruco::CameraParameters CamParam;
-        MarkerDetector MDetector;
-        vector<Marker> Markers;
-        float MarkerSize=0.008;
         //read the input image
-        cv::Mat InImage;
-        cv::Mat InImage2;
         //try opening first as video
         VideoCapture vreader(1);
-        VideoCapture vreader2(0);
+        VideoCapture vreader2(2);
 
-
-        const char mainWindow[] = "FotbalRobotic Tracker";
-        cv::namedWindow(mainWindow, CV_WINDOW_FULLSCREEN);
-        cv::Mat HSVImage;
-        cv::Mat BallMask;
-        cv::Mat HSVImage2;
-        cv::Mat BallMask2;
-        cv::Mat VerdeMask;
-        cv::Mat VerdeMask2;
-
-        int mid = 0;
-        int rc = 0;
-
-        MarkerSize=10;
+        cv::namedWindow(mainWindow1, CV_WINDOW_FULLSCREEN);
+        cv::namedWindow(mainWindow2, CV_WINDOW_FULLSCREEN);
 
         //ATENTIE! AICI SETAM LA 1080 CU 720. IN CAMERA PARAMETERS MAI JOS AVEM 640 CU 480 PE CARE LE MODIFICAM LA 1080 CU 720??
         //intrebare: de ce folosim camparam?
@@ -150,22 +478,17 @@ int main(int argc,char **argv)
         //system("guvcview -d /dev/video1 -f MJPEG -s 128x72 -o");
         //system("guvcview -d /dev/video2 -f MJPEG -s 128x72 -o");
 
-        int onces = 0;
-        int onced = 0;
-        int la0s = 0;
-        int la0d = 0;
+        //read camera parameters if specifed
+        CamParam.readFromXMLFile("/etc/fr/camera.yml");
+        //resizes the parameters to fit the size of the input image
+        CamParam.resize( InImage.size());
 
         while(1) {
 
         if (vreader.isOpened()) {
-//            vreader.grab();
-//            vreader.retrieve(InImage);
             vreader>>InImage;
         }
-
         if (vreader2.isOpened()) {
-//            vreader2.grab();
-//            vreader2.retrieve(InImage2);
             vreader2>>InImage2;
         }
 
@@ -181,284 +504,10 @@ int main(int argc,char **argv)
             return 0;
         }
 
-        cv::createTrackbar("H Low", mainWindow, &hLow, 180, NULL);
-        cv::createTrackbar("S Low", mainWindow, &sLow, 255, NULL);
-        cv::createTrackbar("V Low", mainWindow, &vLow, 255, NULL);
-        cv::createTrackbar("H High", mainWindow, &hHigh, 180, NULL);
-        cv::createTrackbar("S High", mainWindow, &sHigh, 255, NULL);
-        cv::createTrackbar("V High", mainWindow, &vHigh, 255, NULL);
+        camera1();
 
-        cv::Scalar lowThreshold(hLow, sLow, vLow, 0);   //pt minge
-        cv::Scalar highThreshold(hHigh, sHigh, vHigh, 0);
+        camera2();
 
-        cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
-        cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
-
-        cv::cvtColor(InImage, HSVImage, CV_RGB2HSV);
-
-        cv::cvtColor(InImage2, HSVImage2, CV_RGB2HSV);
-
-        cv::inRange(HSVImage, lowThreshold, highThreshold, BallMask);
-
-        cv::inRange(HSVImage2, lowThreshold, highThreshold, BallMask2);
-
-        cv::inRange(HSVImage, lowThreshold_00, highThreshold_00, VerdeMask);   //varde mask
-
-        cv::inRange(HSVImage2, lowThreshold_00, highThreshold_00, VerdeMask2);   //varde mask
-
-        Moments ballMoments = moments(BallMask, false);
-
-        Moments ballMoments2 = moments(BallMask2, false);
-
-        Moments verdeMoments = moments(VerdeMask, false);
-
-        Moments verdeMoments2 = moments(VerdeMask2, false);
-
-        Point   ballPosition;
-
-        Point   verdePosition, verdePosition2;
-
-        float ballArea = ballMoments.m00;
-        float ballArea2 = ballMoments2.m00;
-        float verdeArea = verdeMoments.m00;
-        float verdeArea2 = verdeMoments2.m00;
-        int cps1x=0, cps1y=0, cps2x=0, cps2y=0;
-
-        int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
-
-        if(ballArea > 10) {
-            ballPosition.x = ballMoments.m10/ballArea;
-            ballPosition.y = ballMoments.m01/ballArea;
-            //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
-            robotCoords coords;
-            coords.id = 0; // Id Ball
-            coords.y  =  ballPosition.x;
-            coords.x  =  ballPosition.y;
-            coords.angle = 0;
-           // cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
-            coords.timestamp = std::time(0);
-            mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
-        }
-        else
-            if(ballArea2 > 10) {
-                ballPosition.x = ballMoments2.m10/ballArea2;
-                ballPosition.y = ballMoments2.m01/ballArea2;
-                //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
-                robotCoords coords;
-                coords.id = 0; // Id Ball
-                coords.y  =  ballPosition.x;
-                coords.x  =  ballPosition.y;
-                coords.angle = 0;
-            //    cerr<<ballPosition.x<<" "<<ballPosition.y<<endl;
-                coords.timestamp = std::time(0);
-                mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
-            }
-
-        if (verdeArea > 20) {
-            verdePosition.y = verdeMoments.m10/verdeArea;
-            verdePosition.x = verdeMoments.m01/verdeArea;
-            circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
-        }
-
-        if (verdeArea2 > 20) {
-            verdePosition2.y = verdeMoments2.m10/verdeArea2;
-            verdePosition2.x = verdeMoments2.m01/verdeArea2;
-            circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
-        }
-
-        //facem regula de trei simpla astfel incat sa avem 0-500, 501-1000 coordonatele terenului.
-        //mai trebuie sa luam coordonatele portilor pentru a stii exact unde este 0 si respectiv 1000
-
-        imshow("ceva", BallMask);
-        imshow("verde",VerdeMask);
-        //imshow("ceva2", BallMask2);
-        //read camera parameters if specifed
-        CamParam.readFromXMLFile("/etc/fr/camera.yml");
-        //resizes the parameters to fit the size of the input image
-        CamParam.resize( InImage.size());
-        bitwise_not(InImage, InImage);
-        bitwise_not(InImage2, InImage2);
-
-
-        //filtru sharpen
-        cv::Mat tmp1,tmp2;
-        cv::GaussianBlur(InImage, tmp1, cv::Size(3,3), 5);
-        cv::addWeighted(InImage, alfa/100, tmp1, -beta/100, 0, InImage);
-        cv::createTrackbar("alfa", mainWindow, &alfa, 300, NULL);
-        cv::createTrackbar("beta", mainWindow, &beta, 300, NULL);
-
-        //read marker size if specified
-        //Ok, let's detect
-        MDetector.getCandidates();
-        MDetector.setMinMaxSize(0.005, 0.5);
-
-        MDetector.detect(InImage,Markers,CamParam,MarkerSize);
-        //cum consider ca ar fi bine: fac de doua ori, dar a doua oara adaug un parametru la coordonate.
-
-        //for each marker, draw info and its boundaries in the image
-        int nr = 0;
-        if (onces ==0)
-         {
-            for (unsigned int i=0;i<Markers.size();i++) {
-                if (Markers[i].id == 1 || Markers[i].id == 21)
-                {
-                Markers[i].draw(InImage,Scalar(0,0,255),2);
-
-                cv::Point2f markerCenter, p1, p2;
-
-                markerCenter = Markers[i].getCenter();
-                if (markerCenter.x !=0 && markerCenter.y !=0) {
-                    if (Markers[i].id == 1)
-                    {
-                        cps1y = markerCenter.x;
-                        cps1x = markerCenter.y;
-                        nr++;
-                    }
-                    if (Markers[i].id == 21)
-                    {
-                        cps2y = markerCenter.x;
-                        cps2x = markerCenter.y;
-                        nr++;
-                    }
-                }
-                   // cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
-
-                   // cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
-                }
-            }
-        if (nr == 2) {
-            onces = 1;
-            la0s = (cps1x + cps2x) / 2;
-            }
-        }
-
-
-        for (unsigned int i=0;i<Markers.size();i++) {
-            //cout<<Markers[i]<<endl;
-            Markers[i].draw(InImage,Scalar(0,0,255),2);
-            double position[3];
-            double orientation[4];
-
-            cv::Point2f markerCenter, p1, p2;
-            double pd, angle;
-            robotCoords coords;
-
-            markerCenter = Markers[i].getCenter();
-            if (Markers[i].id != 1)
-                if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
-
-                coords.id = idAssocMat[Markers[i].id];
-                coords.y  = markerCenter.x;
-                coords.x  = markerCenter.y;
-                if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
-                if (coords.x > la0s && coords.x < verdePosition.x) {
-
-                    //scalare coordonate
-                    coords.x = (coords.x - la0s) * 700 / (verdePosition.x - la0s);
-
-                    p1.x = Markers[i][0].x;
-                    p1.y = Markers[i][0].y;
-                    p2.x = Markers[i][1].x;
-                    p2.y = Markers[i][1].y;
-
-                    pd = p1.y-p2.y/p1.x-p2.x;
-
-                    angle= atan2(p1.x-p2.x, p1.y-p2.y);
-                    angle = angle*180/3.1415 + 180;
-                    cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-                    if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
-                    coords.angle = angle;
-                    coords.timestamp = std::time(0);
-                    mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
-                }
-            }
-
-        }
-
-        Markers.clear();
-
-        MDetector.detect(InImage2,Markers,CamParam,MarkerSize); //este posibil sa fie bine asa, daca nu reinitializeaza vectorul markers. altfel va fi mai enervant
-
-        int nr2 = 0;
-        if (onced ==0)
-         {
-            for (unsigned int i=0;i<Markers.size();i++) {
-                if (Markers[i].id == 1 || Markers[i].id == 21)
-                {
-                Markers[i].draw(InImage,Scalar(0,0,255),2);
-
-                cv::Point2f markerCenter, p1, p2;
-
-                markerCenter = Markers[i].getCenter();
-                if (markerCenter.x !=0 && markerCenter.y !=0) {
-                    if (Markers[i].id == 1)
-                    {
-                        cpd1y = markerCenter.x;
-                        cpd1x = markerCenter.y;
-                        nr2++;
-                    }
-                    if (Markers[i].id == 21)
-                    {
-                        cpd2y = markerCenter.x;
-                        cpd2x = markerCenter.y;
-                        nr2++;
-                    }
-                }
-                   // cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
-
-                   // cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
-                }
-            }
-        if (nr2 == 2) {
-            onced = 1;
-            la0d = (cpd1x + cpd2x) / 2;
-            }
-        }
-
-
-        //for each marker, draw info and its boundaries in the image
-        for (unsigned int i=0;i<Markers.size();i++) {
-            //cout<<Markers[i]<<endl;
-            Markers[i].draw(InImage2,Scalar(0,0,255),2);
-            double position[3];
-            double orientation[4];
-
-            cv::Point2f markerCenter, p1, p2;
-            double pd, angle;
-            robotCoords coords;
-
-            markerCenter = Markers[i].getCenter();
-            if (Markers[i].id != 1)
-                if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
-
-                coords.id = idAssocMat[Markers[i].id];
-                coords.y  = markerCenter.x;
-                coords.x  = markerCenter.y;
-                if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
-                if (coords.x > la0d && coords.x < verdePosition.x) {
-
-                    //scalare coordonate
-                    coords.x = (coords.x - la0d) * 700 / (verdePosition.x - la0d);
-
-                    p1.x = Markers[i][0].x;
-                    p1.y = Markers[i][0].y;
-                    p2.x = Markers[i][1].x;
-                    p2.y = Markers[i][1].y;
-
-                    pd = p1.y-p2.y/p1.x-p2.x;
-
-                    angle= atan2(p1.x-p2.x, p1.y-p2.y);
-                    angle = angle*180/3.1415 + 180;
-                    cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-                    if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
-                    coords.angle = angle;
-                    coords.timestamp = std::time(0);
-                    mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
-                }
-            }
-        }
-
-        Markers.clear();
         // Call mosquitto
         rc = mosquitto_loop(mosq, 1, 50);
 
@@ -467,27 +516,11 @@ int main(int argc,char **argv)
             mosquitto_reconnect(mosq);
         }
 
-        //Cerc verde 0,0
-        circle(InImage, Point(15,30), 5, Scalar(0, 255, 255), 2);
+        cv::imshow(mainWindow1,InImage);
 
-        //Poarta stanga
-        Point goalTopLeft(15, 280);
-        Point goalLowLeft(15, 420);
-        Point goalTopRight(35, 280);
-        Point goalLowRight(35, 420);
+        cv::imshow(mainWindow2,InImage2);
 
-        circle(InImage, goalTopLeft, 2, Scalar(255, 0, 0), 2);
-        circle(InImage, goalLowLeft, 2, Scalar(255, 0, 0), 2);
-        circle(InImage, goalTopRight, 2, Scalar(255, 0, 0), 2);
-        circle(InImage, goalLowRight, 2, Scalar(255, 0, 0), 2);
-
-        //Poarta dreapta
-
-
-        cv::imshow("FotbalRobotic Tracker",InImage);
-
-        cv::imshow("Camera 2",InImage2);
-
+        cv::imshow(mainWindowsettings1,InImage);
         //show also the internal image resulting from the threshold operation
         //cv::imshow("thes", MDetector.getThresholdedImage() );
         cv::waitKey(99);//wait for key to be pressed
