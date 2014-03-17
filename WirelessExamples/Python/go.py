@@ -6,7 +6,7 @@ from struct import *
 
 client = mosquitto.Mosquitto("Go4Ever")
 
-client.connect("192.168.1.72")
+client.connect("192.168.1.113")
 
 time.sleep(0.05)
 
@@ -15,7 +15,7 @@ def do_stuff():
   rw = 80
   msg   = pack('iii', lw, rw, 0)
   print msg
-  client.publish("in13", msg)
+  client.publish("in12", msg)
   time.sleep(0.7)
 
 while (True):

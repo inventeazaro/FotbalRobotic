@@ -184,7 +184,6 @@ void WiFlyDevice::waitForResponse(const char *toMatch) {
    */
    // Note: Never exits if the correct response is never found
    findInResponse(toMatch);
- 
 }
 
 
@@ -223,7 +222,7 @@ void WiFlyDevice::begin(boolean adhocMode) {
   DEBUG_LOG(1, "Entered WiFlyDevice::begin()");
 
   if (!bDifferentUart) SPIuart.begin();
-  reboot(); // Reboot to get device into known state
+  //reboot(); // Reboot to get device into known state
   //requireFlowControl();
   setConfiguration(adhocMode);
 }
@@ -466,7 +465,7 @@ void WiFlyDevice::setAdhocParams()
 	
 	// Enable Auto IP assignment, This allows the WiFly to automatically
 	// assign the IP addresses
-	sendCommand(F("set ip d 2"));
+	sendCommand(F("set ip dhcp 2"));
 }
 
 //
@@ -481,7 +480,7 @@ boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
 
   DEBUG_LOG(1, "Entered WiFlyDevice::beginAdhoc()");
 
-  reboot(); // Reboot to get device into known state
+  //reboot(); // Reboot to get device into known state
   
   enterCommandMode();
 
@@ -531,7 +530,7 @@ boolean WiFlyDevice::join(const char *ssid) {
     // TODO: Extract information from complete response?
     // TODO: Change this to still work when server mode not active
     waitForResponse("Listen on ");
-    skipRemainderOfResponse();
+    //skipRemainderOfResponse(); //needs \n to proceed!!!!!!
     return true;
   }
   return false;
@@ -548,7 +547,7 @@ boolean WiFlyDevice::join(const char *ssid, const char *passphrase,
   sendCommand(F("set wlan "), true);
 
   if (isWPA) {
-    sendCommand(F("passphrase "), true);
+    sendCommand(F("phrase "), true);
   } else {
     sendCommand(F("key "), true);
   }
@@ -689,6 +688,35 @@ long WiFlyDevice::getTime(){
 
 
   return strtol(buffer, NULL, 0);
+}
+
+#define MAC_SIZE 18
+
+char * WiFlyDevice::getMAC(){
+
+	char newChar;
+	static char mac[MAC_SIZE] = "";
+	byte offset = 0;
+
+	enterCommandMode();
+
+	sendCommand(F("get mac\r"), false, "Mac Addr=");
+
+	while(offset < MAC_SIZE) {
+		newChar = uart->read();
+
+		if(newChar != -1) {
+			mac[offset++] = newChar;
+		}
+	}
+	mac[MAC_SIZE-1] = '\0';
+
+	waitForResponse("<");
+	findInResponse(" ");
+
+	//sendCommand(F("exit\r"), false, "EXIT\r\n");
+	uart->println(F("exit"));
+	return mac;
 }
 
 

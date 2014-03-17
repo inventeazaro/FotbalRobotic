@@ -5,23 +5,26 @@
 #include <PubSubClient.h>
 #include "id.h"
 
-#define SW_VERSION    "RoboSoccer v0.6"
+#define SW_VERSION    "RoboSoccer v0.7"
 #define MQTT_TIMEOUT  1000
 
 int MOTOR2_PIN1 = 5;
-int MOTOR2_PIN2 = 3;
-int MOTOR1_PIN1 = 6;
-int MOTOR1_PIN2 = 9;
+int MOTOR2_PIN2 = 6;
+int MOTOR1_PIN1 = 9;
+int MOTOR1_PIN2 = 10;
 
 int BUZZER_PIN = 7;
 
 // Update these with values suitable for your network.
-byte server[] = { 192, 168, 1, 72 };
+byte server[] = { 192, 168, 1, 113 };
 
 WiFlyClient wiFlyClient;
 PubSubClient client(server, 1883, callback, wiFlyClient);
 
-SoftwareSerial mySerial(2, 4); //RX, TX
+const char mySSID[] = "fotbalrobotic";
+const char myPassword[] = "inventeaza";
+
+SoftwareSerial mySerial(7, 4); //RX, TX
 
 int motor1=0; //left
 int motor2=0; //right
@@ -54,6 +57,7 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
 void setup() {
   Serial.begin(9600);
   mySerial.begin(9600);
+  mySerial.println(F("Starting..."));
 
   pinMode(MOTOR1_PIN1, OUTPUT);
   pinMode(MOTOR1_PIN2, OUTPUT);
@@ -64,9 +68,10 @@ void setup() {
 
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
+  //wiFly.begin(&Serial, &mySerial);
   WiFly.begin();
 
-  WiFly.join(("fotbalrobotic"), ("dorelrobotel"));
+  WiFly.join(("fotbalrobotic"), ("inventeaza"));
   mySerial.println(F("Connected to wireless network!"));
   mySerial.println(F("Attempting MQTT connection!"));
 
@@ -99,7 +104,7 @@ void loop() {
       }
     }
   }
-  go(motor1,motor2);
+  go(motor1, motor2);
   client.loop();
   
   if(v < 320 ){
