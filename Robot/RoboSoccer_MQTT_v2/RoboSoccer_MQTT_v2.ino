@@ -15,6 +15,10 @@ int MOTOR1_PIN2 = 5;
 int ENCODER_R = 2;
 int ENCODER_L = 3;
 
+
+// Connection to wireless network
+// It takes ~ 26 seconds to connect to wifi and mqtt server
+
 // Update these with values suitable for your network.
 byte server[] = { 192, 168, 0, 100 };
 
