@@ -1,1 +1,1 @@
-#define ROBOT_ID   "in12"
+#define ROBOT_ID   "/r1"

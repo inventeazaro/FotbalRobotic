@@ -28,3 +28,5 @@ http://www.udacity.com/file?file_key=agpzfnVkYWNpdHl1ckcLEgZDb3Vyc2UiBWNzMzczDAs
 Sample games
 
 http://www.youtube.com/watch?v=6aTZqpfKIfU
+
+Librarie WiFly + MQTT Arduino - https://github.com/jcrouchley/WiFly-Shield

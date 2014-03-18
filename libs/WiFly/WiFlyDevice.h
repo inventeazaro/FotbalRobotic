@@ -9,9 +9,9 @@ class WiFlyDevice {
   public:
     WiFlyDevice(SpiUartDevice& theUart);
 
-    void setUart(Stream* newUart);
-    void begin();
-    void begin(boolean adhocMode);
+	void setUart(Stream* newUart);
+	void begin();
+	void begin(boolean adhocMode);
 	boolean createAdHocNetwork(const char *ssid);
 
     boolean join(const char *ssid);
@@ -21,6 +21,7 @@ class WiFlyDevice {
     boolean configure(byte option, unsigned long value);
 
 	long getTime();
+	char * getMAC();  // NEW return Wifly MAC address.
 
     const char * ip();
     
