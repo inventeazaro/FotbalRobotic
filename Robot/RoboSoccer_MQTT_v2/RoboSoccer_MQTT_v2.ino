@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include "id.h"
 
-#define SW_VERSION    "RoboSoccer v0.7"
+#define SW_VERSION    "RoboSoccer v0.8"
 #define MQTT_TIMEOUT  1000
 
 int MOTOR2_PIN1 = 10;
@@ -64,7 +64,7 @@ void left() {
 }
 
 void right() {
-  mySerial.println("left");
+  mySerial.println("right");
 }
 
 void setup() {
