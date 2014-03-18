@@ -90,7 +90,7 @@ struct mosquitto *mosq;
 const char mainWindow1[] = "FotbalRobotic Tracker camera 1";
 const char mainWindowsettings1[] = "FotbalRobotic Tracker settings camera 1";
 const char mainWindow2[] = "FotbalRobotic Tracker camera 2";
-
+const char setariverde1[] = "Setari verde 1";
 cv::Mat InImage;
 cv::Mat InImage2;
 
@@ -100,6 +100,7 @@ cv::Mat HSVImage2;
 cv::Mat BallMask2;
 cv::Mat VerdeMask;
 cv::Mat VerdeMask2;
+cv::Mat VerdeCerc;
 
 int mid = 0;
 int rc = 0;
@@ -123,33 +124,38 @@ void camera1 () {
     cv::createTrackbar("S High", mainWindowsettings1, &sHigh1, 255, NULL);
     cv::createTrackbar("V High", mainWindowsettings1, &vHigh1, 255, NULL);
 
+ /*   cv::createTrackbar("H Low", setariverde1, &hLow_00, 180, NULL);
+    cv::createTrackbar("S Low", setariverde1, &sLow_00, 255, NULL);
+    cv::createTrackbar("V Low", setariverde1, &vLow_00, 255, NULL);
+    cv::createTrackbar("H High", setariverde1, &hHigh_00, 180, NULL);
+    cv::createTrackbar("S High", setariverde1, &sHigh_00, 255, NULL);
+    cv::createTrackbar("V High", setariverde1, &vHigh_00, 255, NULL);
+*/
     cv::Scalar lowThreshold(hLow1, sLow1, vLow1, 0);   //pt minge
     cv::Scalar highThreshold(hHigh1, sHigh1, vHigh1, 0);
 
-    cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
-    cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
+  //  cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
+  //  cv::Scalar highThreshOpenCV Error: Bad flag (parameter or structure field) (Unrecognized or unsupported array type) in cvGetMat, file /build/buildd/opencv-2.3.1/modules/core/src/array.cpp, line 2482
 
     cv::cvtColor(InImage, HSVImage, CV_RGB2HSV);
 
     cv::inRange(HSVImage, lowThreshold, highThreshold, BallMask);
 
-    cv::inRange(HSVImage, lowThreshold_00, highThreshold_00, VerdeMask);   //varde mask
+//    cv::inRange(HSVImage, lowThreshold_00, highThreshold_00, VerdeMask);   //varde mask
 
     Moments ballMoments = moments(BallMask, false);
 
-    Moments verdeMoments = moments(VerdeMask, false);
+ //   Moments verdeMoments = moments(VerdeMask, false);
 
     Point   ballPosition;
 
-    Point   verdePosition;
+ //   Point   verdePosition;
 
     float ballArea = ballMoments.m00;
-    float verdeArea = verdeMoments.m00;
+//    float verdeArea = verdeMoments.m00;
     int cps1x=0, cps1y=0, cps2x=0, cps2y=0;
 
-    int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
-
-    if(ballArea > 10) {
+    if(ballArea > 20) {
         ballPosition.x = ballMoments.m10/ballArea;
         ballPosition.y = ballMoments.m01/ballArea;
         //circle(InImage, ballPosition, 10, Scalar(255, 255, 255), 2);
@@ -163,22 +169,41 @@ void camera1 () {
         mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
     }
 
-    if (verdeArea > 20) {
+ /*   if (verdeArea > 20) {
         verdePosition.y = verdeMoments.m10/verdeArea;
         verdePosition.x = verdeMoments.m01/verdeArea;
         circle(InImage, verdePosition, 27.3, Scalar(255, 255, 255), 2);
-    }
+    }*/
     CamParam.readFromXMLFile("/etc/fr/camera.yml");
 
     //facem regula de trei simpla astfel incat sa avem 0-500, 501-1000 coordonatele terenului.
     //mai trebuie sa luam coordonatele portilor pentru a stii exact unde este 0 si respectiv 1000
 
     imshow("ceva", BallMask);
-    imshow("verde",VerdeMask);
+ //   imshow("verde",VerdeMask);
+
     bitwise_not(InImage, InImage);
 
+    Mat roi(InImage, Rect(Point (400,620), Point (560,720)));
+    rectangle(InImage, Point (400,620), Point (560,720), Scalar(255,0,255),1,8, 0);
+    vector<Vec3f> circles;
+    // Apply the Hough Transform to find the circles
+    cvtColor( roi, roi, CV_BGR2GRAY );
+    HoughCircles( roi, circles, CV_HOUGH_GRADIENT, 1, 10, 100, 24, 0, 0 );
+    cerr<<circles.size();
+      // Draw the circles detected
+      for( size_t i = 0; i < circles.size(); i++ )
+      {
+          Point center(cvRound(circles[i][0])+400, cvRound(circles[i][1])+620);
+          int radius = cvRound(circles[i][2]);
+          circle( InImage, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+          circle( InImage, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
+          cout << "center : " << center << "\nradius : " << radius << endl;
+       }
+     ///
+
     //filtru sharpen
-    cv::Mat tmp1,tmp2;
+    cv::Mat tmp1;
     cv::GaussianBlur(InImage, tmp1, cv::Size(3,3), 5);
     cv::addWeighted(InImage, alfa/100, tmp1, -beta/100, 0, InImage);
     cv::createTrackbar("alfa", mainWindowsettings1, &alfa, 300, NULL);
@@ -200,8 +225,6 @@ void camera1 () {
             if (Markers[i].id == 1 || Markers[i].id == 21)
             {
             Markers[i].draw(InImage,Scalar(0,0,255),2);
-           // const char mainWindow[] = "FotbalRobotic Tracker";
-
             cv::Point2f markerCenter, p1, p2;
 
             markerCenter = Markers[i].getCenter();
@@ -231,7 +254,6 @@ void camera1 () {
         }
     }
 
-
     for (unsigned int i=0;i<Markers.size();i++) {
         //cout<<Markers[i]<<endl;
         Markers[i].draw(InImage,Scalar(0,0,255),2);
@@ -243,18 +265,18 @@ void camera1 () {
         robotCoords coords;
 
         markerCenter = Markers[i].getCenter();
-        if (Markers[i].id != 1)
+      /*  if (Markers[i].id != 1)
             if (Markers[i].id != 21) {  //daca nu este markerul de langa poarta
 
             coords.id = idAssocMat[Markers[i].id];
             coords.y  = markerCenter.x;
             coords.x  = markerCenter.y;
             if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
-            if (coords.x > la0s && coords.x < verdePosition.x) {
+            if (coords.x > la0s && coords.x < 700) {
 
                 //scalare coordonate
-                coords.x = (coords.x - la0s) * 700 / (verdePosition.x - la0s);
-
+                coords.x = (coords.x - la0s) * 700 / (0 - la0s);
+                //coords.y = (coords.y - (markerdela0,0 +- offset)/ (markerdela500,0 +- offset2) - (markerdela0,0 +- offset))
                 p1.x = Markers[i][0].x;
                 p1.y = Markers[i][0].y;
                 p2.x = Markers[i][1].x;
@@ -265,17 +287,20 @@ void camera1 () {
                 angle= atan2(p1.x-p2.x, p1.y-p2.y);
                 angle = angle*180/3.1415 + 180;
                 cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-                if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+                //if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
                 coords.angle = angle;
                 coords.timestamp = std::time(0);
                 mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
             }
         }
-
+*/
     }
 
 
 }
+
+Point center_stanga;
+int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0; //pt partea stanga a terenului
 
 void camera2() {
     cv::createTrackbar("H Low", mainWindow2, &hLow2, 180, NULL);
@@ -288,26 +313,25 @@ void camera2() {
     cv::Scalar lowThreshold(hLow2, sLow2, vLow2, 0);   //pt minge
     cv::Scalar highThreshold(hHigh2, sHigh2, vHigh2, 0);
 
-    cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow_00, 0);   //pt verde
-    cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
+   // cv::Scalar lowThreshold_00(hLow_00, sLow_00, vLow3737_00, 0);   //pt verde
+  //  cv::Scalar highThreshold_00(hHigh_00, sHigh_00, vHigh_00, 0);
 
     cv::cvtColor(InImage2, HSVImage2, CV_RGB2HSV);
 
     cv::inRange(HSVImage2, lowThreshold, highThreshold, BallMask2);
 
-    cv::inRange(HSVImage2, lowThreshold_00, highThreshold_00, VerdeMask2);   //varde mask
+   // cv::inRange(HSVImage2, lowThreshold_00, highThreshold_00, VerdeMask2);   //varde mask
 
     Moments ballMoments2 = moments(BallMask2, false);
 
-    Moments verdeMoments2 = moments(VerdeMask2, false);
+    //Moments verdeMoments2 = moments(VerdeMask2, false);
 
     Point   ballPosition;
 
-    Point   verdePosition2;
+  //  Point   verdePosition2;
 
     float ballArea2 = ballMoments2.m00;
-    float verdeArea2 = verdeMoments2.m00;
-    int cpd1x=0, cpd1y=0, cpd2x=0, cpd2y=0;
+  //  float verdeArea2 = verdeMoments2.m00;
 
     if(ballArea2 > 10) {
             ballPosition.x = ballMoments2.m10/ballArea2;
@@ -322,26 +346,44 @@ void camera2() {
             coords.timestamp = std::time(0);
             mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
         }
-
+/*
     if (verdeArea2 > 20) {
         verdePosition2.y = verdeMoments2.m10/verdeArea2;
         verdePosition2.x = verdeMoments2.m01/verdeArea2;
         circle(InImage, verdePosition2, 27.3, Scalar(255, 255, 255), 2);
-    }
+    }*/
 
     //facem regula de trei simpla astfel incat sa avem 0-500, 501-1000 coordonatele terenului.
     //mai trebuie sa luam coordonatele portilor pentru a stii exact unde este 0 si respectiv 1000
 
     bitwise_not(InImage2, InImage2);
 
+    Mat roi2(InImage2, Rect(Point (400,620), Point (560,720)));
+    rectangle(InImage2, Point (400,620), Point (560,720), Scalar(255,0,255),1,8, 0);
+    vector<Vec3f> circles2;
+    // Apply the Hough Transform to find the circles
+    cvtColor( roi2, roi2, CV_BGR2GRAY );
+    HoughCircles( roi2, circles2, CV_HOUGH_GRADIENT, 1, 10, 200, 24, 0, 0 );
+    //cerr<<circles2.size();
+    // Draw the circles detected
+    for( size_t i = 0; i < circles2.size(); i++ )
+      {
+          Point center2(cvRound(circles2[i][0])+400, cvRound(circles2[i][1])+620);
+          int radius2 = cvRound(circles2[i][2]);
+          circle( InImage2, center2, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+          circle( InImage2, center2, radius2, Scalar(0,0,255), 3, 8, 0 );// circle outline
+          cout << "center : " << center2 << "\nradius : " << radius2 << endl;
+          center_stanga = center2;
+      }
+    //cerr<<center_stanga.x<<" si pe y "<<center_stanga.y;
     //filtru sharpen
-    cv::Mat tmp1,tmp2;
-    cv::GaussianBlur(InImage2, tmp1, cv::Size(3,3), 5);
-    cv::addWeighted(InImage2, alfa2/100, tmp1, -beta2/100, 0, InImage2);
+    cv::Mat tmp2;
+    cv::GaussianBlur(InImage2, tmp2, cv::Size(3,3), 5);
+    cv::addWeighted(InImage2, alfa2/100, tmp2, -beta2/100, 0, InImage2);
     cv::createTrackbar("alfa", mainWindow2, &alfa2, 300, NULL);
     cv::createTrackbar("beta", mainWindow2, &beta2, 300, NULL);
 
-    //read marker size if specified
+    //read marker size if smarkerdela0,0pecified
     //Ok, let's detect
     MDetector.getCandidates();
     MDetector.setMinMaxSize(0.005, 0.5);
@@ -381,6 +423,8 @@ void camera2() {
     if (nr2 == 2) {
         onced = 1;
         la0d = (cpd1x + cpd2x) / 2;
+        cpd2y = cpd1y - cpd2y;
+        cerr<<cpd1y<<"iar pt marker 21"<<cpd2y<<"//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////";
         }
     }
 
@@ -403,12 +447,16 @@ void camera2() {
             coords.y  = markerCenter.x;
             coords.x  = markerCenter.y;
            // cerr<<coords.id;
-            if (coords.id ==6) cerr<<"coord nemodif x: "<<coords.x;
-            if (coords.x > la0d && coords.x < verdePosition2.x) {
+            if (coords.id ==6) cerr<<"coord camera 2nemodif x: "<<coords.x;
+            if (coords.x > la0d && coords.x < center_stanga.y) { //hard ca sa tina cont de primul cerc
 
                 //scalare coordonate
-                coords.x = (coords.x - la0d) * 700 / (verdePosition2.x - la0d);
+                coords.x = (coords.x - la0d) * 700 / (center_stanga.y - la0d);
 
+                coords.y = cpd1y - coords.y;
+                coords.y = coords.y * 700 / cpd2y;
+
+                //ca la camera 1 dar cu mici modificari
                 p1.x = Markers2[i][0].x;
                 p1.y = Markers2[i][0].y;
                 p2.x = Markers2[i][1].x;
@@ -461,22 +509,22 @@ int main(int argc,char **argv)
     {
         //read the input image
         //try opening first as video
-        VideoCapture vreader(1);
-        VideoCapture vreader2(2);
+        VideoCapture vreader(2);
+        VideoCapture vreader2(1);
 
         cv::namedWindow(mainWindow1, CV_WINDOW_FULLSCREEN);
         cv::namedWindow(mainWindow2, CV_WINDOW_FULLSCREEN);
 
         //ATENTIE! AICI SETAM LA 1080 CU 720. IN CAMERA PARAMETERS MAI JOS AVEM 640 CU 480 PE CARE LE MODIFICAM LA 1080 CU 720??
         //intrebare: de ce folosim camparam?
-        //vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
-        //vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
-        //vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
-        //vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
 
         //TODO important shit!
-        //system("guvcview -d /dev/video1 -f MJPEG -s 128x72 -o");
-        //system("guvcview -d /dev/video2 -f MJPEG -s 128x72 -o");
+        //system("guvcview -d /dev/video1 -f MJPEG -s 960x720 -o");
+        //system("guvcview -d /dev/video2 -f MJPEG -s 960x720 -o");
 
         //read camera parameters if specifed
         CamParam.readFromXMLFile("/etc/fr/camera.yml");
