@@ -32,19 +32,19 @@ while True:
         aux = sys.stdin.read(1)
 
         if aux == "w":
-            msg  = pack('iii', 70, 70, 0)
+            msg  = pack('iii', 70, 70, 200)
             client.publish(robot, msg)
         elif aux == "a":
-            msg  = pack('iii', -37, 37, 0)
+            msg  = pack('iii', -25, 25, 200)
             client.publish(robot, msg)
         elif aux == "d":
-            msg  = pack('iii', 37, -37, 0)
+            msg  = pack('iii', 25, -25, 200)
             client.publish(robot, msg)
         elif aux == " ":
-            msg  = pack('iii', 0, 0, 0)
+            msg  = pack('iii', 0, 0, 200)
             client.publish(robot, msg)
         elif aux == "s":
-            msg = pack('iii', -50, -50, 0)
+            msg = pack('iii', -50, -50, 200)
             client.publish(robot, msg)
 
         print 'pressed ' + aux

@@ -76,7 +76,7 @@ void setup() {
   //mySerial.println(F("Attempting MQTT connection!"));
 
   if (client.connect("RSB " ROBOT_ID)) {
-    //client.publish(("status"),(SW_VERSION " " ROBOT_ID));
+    client.publish("status", SW_VERSION " " ROBOT_ID);
     client.subscribe(ROBOT_ID);
   }else{
     mySerial.println(F("Connection problem"));
@@ -94,7 +94,7 @@ void loop() {
     (motor1 || motor2)) {
     motor1 = 0;
     motor2 = 0;
-    mySerial.println("Emergency motor break!!!");
+    //mySerial.println("Emergency motor break!!!");
 
 //    if(!client.connected()) {
 //      if (client.connect("RSB " ROBOT_ID)) {
@@ -107,10 +107,17 @@ void loop() {
   }
   
   go(motor1, motor2);
+  
+  if(millis() > lastTimeReceived+time) {
+    motor1 = 0;
+    motor2 = 0;
+    go(motor1, motor2);
+  }
+  
   if (!client.loop()) {
     // disconnected
     if (client.connect("RSB " ROBOT_ID)) {
-        //client.publish(("status"), (SW_VERSION " " ROBOT_ID));
+        client.publish("status", SW_VERSION " " ROBOT_ID);
         client.subscribe(ROBOT_ID);
     }
   }
