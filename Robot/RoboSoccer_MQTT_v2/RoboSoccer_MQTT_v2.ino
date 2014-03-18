@@ -1,11 +1,10 @@
 #include <SoftwareSerial.h>
-
 #include <SPI.h>
 #include <WiFly.h>
 #include <PubSubClient.h>
 #include "id.h"
 
-#define SW_VERSION    "RoboSoccer v0.8"
+#define SW_VERSION    "RS v0.8"
 #define MQTT_TIMEOUT  1000
 
 int MOTOR2_PIN1 = 10;
@@ -32,6 +31,9 @@ int motor2 = 0; //right
 int time   = 0;
 int rotation = 0;
 long long lastTimeReceived=0;
+
+int left_r = 0;
+int right_r = 0;
 
 struct control {
   long left;
@@ -60,11 +62,11 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
 }
 
 void left() {
-  mySerial.println("left");
+  left_r++;
 }
 
 void right() {
-  mySerial.println("right");
+  right_r++;
 }
 
 void setup() {
@@ -105,22 +107,10 @@ void setup() {
 }
 
 void loop() {
-  //int v = analogRead(0);
-  //v = (v/2 - 10);
   if(millis() >= (lastTimeReceived+time) &&
     (motor1 || motor2)) {
     motor1 = 0;
     motor2 = 0;
-    //mySerial.println("Emergency motor break!!!");
-
-//    if(!client.connected()) {
-//      if (client.connect("RSB " ROBOT_ID)) {
-//        //client.publish(("status"),(SW_VERSION " " ROBOT_ID));
-//        client.subscribe(ROBOT_ID);
-//      } else {
-//        mySerial.println(F("Connection problem"));
-//      }
-//    }
   }
   
   go(motor1, motor2);
@@ -138,18 +128,6 @@ void loop() {
         client.subscribe(ROBOT_ID);
     }
   }
-  
-  //if(v < 320 ){
-    //tone(7, 1000, 20);
-    //delay(200);
-    //tone(7, 5000, 1000);
-    //delay(200);
-    //tone(7, 2000, 1000);
-    //delay(200);
-    //tone(7, 4000, 1000);
-    //go(0, 0);
-    //go(0, 0);
-  //}
 }
 
 void go(int speedLeft, int speedRight) {
@@ -171,7 +149,6 @@ void go(int speedLeft, int speedRight) {
     analogWrite(MOTOR2_PIN2, -speedRight);
   }
 }
-
 
 static int freeRAM () {
   extern int __heap_start, *__brkval; 
