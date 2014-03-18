@@ -13,7 +13,8 @@ int MOTOR2_PIN2 = 9;
 int MOTOR1_PIN1 = 6;
 int MOTOR1_PIN2 = 5;
 
-int BUZZER_PIN = 7;
+int ENCODER_R = 2;
+int ENCODER_L = 3;
 
 // Update these with values suitable for your network.
 byte server[] = { 192, 168, 0, 100 };
@@ -26,15 +27,17 @@ const char myPassword[] = "inventeaza";
 
 SoftwareSerial mySerial(4, 7); //RX, TX
 
-int motor1=0; //left
-int motor2=0; //right
-int time;
+int motor1 = 0; //left
+int motor2 = 0; //right
+int time   = 0;
+int rotation = 0;
 long long lastTimeReceived=0;
 
 struct control {
   long left;
   long right;
   long time;
+  long rotation;
 };
 
 void callback(char* topic, uint8_t* payload, unsigned int length) {
@@ -43,7 +46,9 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   motor1 = ctr->left;
   motor2 = ctr->right;
   time   = ctr->time;
-  if (time == 0)
+  rotation = ctr->rotation;
+  
+  if (time == 0 && rotation == 0)
     time = MQTT_TIMEOUT;
   lastTimeReceived = millis();
     
@@ -52,6 +57,14 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   mySerial.print(motor1); 
   mySerial.print(" | "); 
   mySerial.println(motor2);
+}
+
+void left() {
+  mySerial.println("left");
+}
+
+void right() {
+  mySerial.println("left");
 }
 
 void setup() {
@@ -64,8 +77,12 @@ void setup() {
   pinMode(MOTOR2_PIN1, OUTPUT);
   pinMode(MOTOR2_PIN2, OUTPUT);
   
-  pinMode(BUZZER_PIN, OUTPUT);
-
+  pinMode(ENCODER_R, INPUT);
+  pinMode(ENCODER_L, INPUT);
+  
+  attachInterrupt(0, right, CHANGE);
+  attachInterrupt(1, left, CHANGE);
+  
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
   //wiFly.begin(&Serial, &mySerial);
