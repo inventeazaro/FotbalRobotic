@@ -1,24 +1,23 @@
 /*
- * PubSubClient.h - A simple client for MQTT.
- *  Nicholas O'Leary
- *  http://knolleary.net
- */
+ PubSubClient.h - A simple client for MQTT.
+  Nicholas O'Leary
+  http://knolleary.net
+*/
 
 #ifndef PubSubClient_h
 #define PubSubClient_h
 
 #include <Arduino.h>
-
 #include "Client.h"
+#include "Stream.h"
 
 // MQTT_MAX_PACKET_SIZE : Maximum packet size
 #define MQTT_MAX_PACKET_SIZE 128
 
 // MQTT_KEEPALIVE : keepAlive interval in Seconds
-#define MQTT_KEEPALIVE 15
+#define MQTT_KEEPALIVE 5
 
 #define MQTTPROTOCOLVERSION 3
-// BELOW VALUES ARE HEX 1<<4 = 1(0) 2<<4 = 2(0) 10<<4 = 10(0)
 #define MQTTCONNECT     1 << 4  // Client request to connect to Server
 #define MQTTCONNACK     2 << 4  // Connect Acknowledgment
 #define MQTTPUBLISH     3 << 4  // Publish message
@@ -41,34 +40,42 @@
 
 class PubSubClient {
 private:
-	Client* _client;
-	uint8_t buffer[MQTT_MAX_PACKET_SIZE];
-	uint16_t nextMsgId;
-	unsigned long lastOutActivity;
-	unsigned long lastInActivity;
-	bool pingOutstanding;
-	void (*callback)(char*,uint8_t*,unsigned int);
-	uint16_t readPacket();
-	uint8_t readByte();
-	boolean write(uint8_t header, uint8_t* buf, uint16_t length);
-	uint16_t writeString(char* string, uint8_t* buf, uint16_t pos);
-	uint8_t *ip;
-	char* domain;
-	uint16_t port;
+   Client* _client;
+   uint8_t buffer[MQTT_MAX_PACKET_SIZE];
+   uint16_t nextMsgId;
+   unsigned long lastOutActivity;
+   unsigned long lastInActivity;
+   bool pingOutstanding;
+   void (*callback)(char*,uint8_t*,unsigned int);
+   uint16_t readPacket(uint8_t*);
+   uint8_t readByte();
+   boolean write(uint8_t header, uint8_t* buf, uint16_t length);
+   uint16_t writeString(char* string, uint8_t* buf, uint16_t pos);
+   uint8_t *ip;
+   char* domain;
+   uint16_t port;
+   Stream* stream;
 public:
-	PubSubClient(Client& client);
-	PubSubClient(uint8_t *, uint16_t, void (*)(char*,uint8_t*,unsigned int), Client& client);
-	PubSubClient(char*, uint16_t, void (*)	(char*,uint8_t*,unsigned int), Client& client);
-	boolean connect(char *);
-	boolean connect(char*, char*, uint8_t, uint8_t, char*);
-	void disconnect();
-	boolean publish(char *, char *);
-	boolean publish(char *, uint8_t *, unsigned int);
-	boolean publish(char *, uint8_t *, unsigned int, boolean);
-	boolean publish(char *, uint8_t, boolean);
-	boolean subscribe(char *);
-	boolean loop();
-	boolean connected();
+   PubSubClient();
+   PubSubClient(uint8_t *, uint16_t, void(*)(char*,uint8_t*,unsigned int),Client& client);
+   PubSubClient(uint8_t *, uint16_t, void(*)(char*,uint8_t*,unsigned int),Client& client, Stream&);
+   PubSubClient(char*, uint16_t, void(*)(char*,uint8_t*,unsigned int),Client& client);
+   PubSubClient(char*, uint16_t, void(*)(char*,uint8_t*,unsigned int),Client& client, Stream&);
+   boolean connect(char *);
+   boolean connect(char *, char *, char *);
+   boolean connect(char *, char *, uint8_t, uint8_t, char *);
+   boolean connect(char *, char *, char *, char *, uint8_t, uint8_t, char*);
+   void disconnect();
+   boolean publish(char *, char *);
+   boolean publish(char *, uint8_t *, unsigned int);
+   boolean publish(char *, uint8_t *, unsigned int, boolean);
+   boolean publish_P(char *, uint8_t PROGMEM *, unsigned int, boolean);
+   boolean subscribe(char *);
+   boolean subscribe(char *, uint8_t qos);
+   boolean unsubscribe(char *);
+   boolean loop();
+   boolean connected();
 };
+
 
 #endif

@@ -8,15 +8,15 @@
 #define SW_VERSION    "RoboSoccer v0.7"
 #define MQTT_TIMEOUT  1000
 
-int MOTOR2_PIN1 = 5;
-int MOTOR2_PIN2 = 6;
-int MOTOR1_PIN1 = 9;
-int MOTOR1_PIN2 = 10;
+int MOTOR2_PIN1 = 10;
+int MOTOR2_PIN2 = 9;
+int MOTOR1_PIN1 = 6;
+int MOTOR1_PIN2 = 5;
 
 int BUZZER_PIN = 7;
 
 // Update these with values suitable for your network.
-byte server[] = { 192, 168, 1, 113 };
+byte server[] = { 192, 168, 0, 100 };
 
 WiFlyClient wiFlyClient;
 PubSubClient client(server, 1883, callback, wiFlyClient);
@@ -24,7 +24,7 @@ PubSubClient client(server, 1883, callback, wiFlyClient);
 const char mySSID[] = "fotbalrobotic";
 const char myPassword[] = "inventeaza";
 
-SoftwareSerial mySerial(7, 4); //RX, TX
+SoftwareSerial mySerial(4, 7); //RX, TX
 
 int motor1=0; //left
 int motor2=0; //right
@@ -71,13 +71,13 @@ void setup() {
   //wiFly.begin(&Serial, &mySerial);
   WiFly.begin();
 
-  WiFly.join(("fotbalrobotic"), ("inventeaza"));
-  mySerial.println(F("Connected to wireless network!"));
-  mySerial.println(F("Attempting MQTT connection!"));
+  //WiFly.join(("fotbalrobotic"), ("inventeaza"));
+  //mySerial.println(F("Connected to wireless network!"));
+  //mySerial.println(F("Attempting MQTT connection!"));
 
-  if (client.connect("RoboSoccerBot " ROBOT_ID)) {
-    client.publish(("status"),(SW_VERSION " " ROBOT_ID));
-    client.subscribe((ROBOT_ID));
+  if (client.connect("RSB " ROBOT_ID)) {
+    //client.publish(("status"),(SW_VERSION " " ROBOT_ID));
+    client.subscribe(ROBOT_ID);
   }else{
     mySerial.println(F("Connection problem"));
   }
@@ -88,27 +88,35 @@ void setup() {
 }
 
 void loop() {
-  int v = analogRead(0);
-  v = (v/2 - 10);
-  if(millis() >= lastTimeReceived+time) {
+  //int v = analogRead(0);
+  //v = (v/2 - 10);
+  if(millis() >= (lastTimeReceived+time) &&
+    (motor1 || motor2)) {
     motor1 = 0;
     motor2 = 0;
     mySerial.println("Emergency motor break!!!");
 
-    if(!client.connected()) {
-      if (client.connect("RoboSoccerBot " ROBOT_ID)) {
-        client.publish(("status"),(SW_VERSION " " ROBOT_ID));
-        client.subscribe((ROBOT_ID));
-      } else {
-        mySerial.println(F("Connection problem"));
-      }
+//    if(!client.connected()) {
+//      if (client.connect("RSB " ROBOT_ID)) {
+//        //client.publish(("status"),(SW_VERSION " " ROBOT_ID));
+//        client.subscribe(ROBOT_ID);
+//      } else {
+//        mySerial.println(F("Connection problem"));
+//      }
+//    }
+  }
+  
+  go(motor1, motor2);
+  if (!client.loop()) {
+    // disconnected
+    if (client.connect("RSB " ROBOT_ID)) {
+        //client.publish(("status"), (SW_VERSION " " ROBOT_ID));
+        client.subscribe(ROBOT_ID);
     }
   }
-  go(motor1, motor2);
-  client.loop();
   
-  if(v < 320 ){
-    tone(7, 1000, 20);
+  //if(v < 320 ){
+    //tone(7, 1000, 20);
     //delay(200);
     //tone(7, 5000, 1000);
     //delay(200);
@@ -117,8 +125,7 @@ void loop() {
     //tone(7, 4000, 1000);
     //go(0, 0);
     //go(0, 0);
-  }
- 
+  //}
 }
 
 void go(int speedLeft, int speedRight) {
@@ -139,7 +146,6 @@ void go(int speedLeft, int speedRight) {
     analogWrite(MOTOR2_PIN1, 0);
     analogWrite(MOTOR2_PIN2, -speedRight);
   }
-
 }
 
 
