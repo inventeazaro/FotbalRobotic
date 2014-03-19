@@ -37,6 +37,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <math.h>
 
 #include "aruco/aruco.h"
 #include "aruco/cvdrawingutils.h"
@@ -74,7 +75,7 @@ int vHigh_00 = 255;
 
 int idAssocMat[1024] = {1};
 
-#define mqtt_host "localhost"
+#define mqtt_host "192.168.0.100"
 #define mqtt_port 1883
 
 struct robotCoords {
@@ -201,7 +202,7 @@ void camera1 () {
           int radius = cvRound(circles[i][2]);
           circle( InImage, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
           circle( InImage, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
-          cout << "center : " << center << "\nradius : " << radius << endl;
+         // cout << "center : " << center << "\nradius : " << radius << endl;
           center_dreapta = center;
        //   cerr<<"\njtxj "<<center_dreapta.y;  //asta trb sa devina 700
 
@@ -248,9 +249,9 @@ void camera1 () {
                     nr++;
                 }
             }
-               cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
+           //    cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
 
-               cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
+           //    cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
             }
         }
     if (nr == 2) {
@@ -280,10 +281,10 @@ void camera1 () {
             coords.id = idAssocMat[Markers[i].id];
             coords.y  = markerCenter.x;
             coords.x  = markerCenter.y;
-            if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
+           // if (coords.id ==9) cerr<<"coord nemodif x: "<<coords.x;
             if (coords.x > center_dreapta.y && coords.x < la0s) {
 
-                cerr<<"cd.y "<<center_dreapta.y<<" la0s: "<< la0s<<"cps2y "<< cps2y;
+               // cerr<<"cd.y "<<center_dreapta.y<<" la0s: "<< la0s<<"cps2y "<< cps2y;
                 //scalare coordonate
                 coords.x = (coords.x - center_dreapta.y) * 700 / (la0s - center_dreapta.y);
                 coords.x = coords.x + 700;  // de fapt + calib_cam2
@@ -300,8 +301,9 @@ void camera1 () {
 
                 angle= atan2(p1.x-p2.x, p1.y-p2.y);
                 angle = angle*180/3.1415 + 180;
-                cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-                if (coords.id == 9) cerr<<"coord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+                angle = fmod(angle+90,360);
+                //cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                if (coords.id == 1) cerr<<"\n\nunghiul: "<<angle<<"\n\ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
                 coords.angle = angle;
                 coords.timestamp = std::time(0);
                 mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
@@ -380,7 +382,7 @@ void camera2() {
           int radius2 = cvRound(circles2[i][2]);
           circle( InImage2, center2, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
           circle( InImage2, center2, radius2, Scalar(0,0,255), 3, 8, 0 );// circle outline
-          cout << "center : " << center2 << "\nradius : " << radius2 << endl;
+        //  cout << "center : " << center2 << "\nradius : " << radius2 << endl;
           center_stanga = center2;
       }
     //cerr<<center_stanga.x<<" si pe y "<<center_stanga.y;
@@ -422,9 +424,9 @@ void camera2() {
                     nr2++;
                 }
             }
-                cerr<<"muierhgepoarta 1 stanga: x: "<<cpd1x<<" y: "<<cpd1y<<endl;
+      //          cerr<<"muierhgepoarta 1 stanga: x: "<<cpd1x<<" y: "<<cpd1y<<endl;
 
-                cerr<<"miweeuiwpoarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
+      //          cerr<<"miweeuiwpoarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
             }
         }
     if (nr2 == 2) {
@@ -474,8 +476,12 @@ void camera2() {
 
                 angle= atan2(p1.x-p2.x, p1.y-p2.y);
                 angle = angle*180/3.1415 + 180;
-                cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-                if (coords.id == 9) cerr<<"center_stanga pt x este: "<<calib_cam2<<"\n/ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl<<"/n/n";
+                angle = fmod(angle+90,360);
+
+            //    cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+           //     if (coords.id == 9) cerr<<"center_stanga pt x este: "<<calib_cam2<<"\n/ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl<<"/n/n";
+                if (coords.id == 1) cerr<<"\n\nunghiul: "<<angle<<"\n\ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
+
                 coords.angle = angle;
                 coords.timestamp = std::time(0);
                 mosquitto_publish(mosq, &mid, "coords", sizeof(coords), &coords, 0, true);
@@ -517,8 +523,8 @@ int main(int argc,char **argv)
     {
         //read the input image
         //try opening first as video
-        VideoCapture vreader(2);  //camera
-        VideoCapture vreader2(0);  //camera de la 0,0
+        VideoCapture vreader(1);  //camera
+        VideoCapture vreader2(2);  //camera de la 0,0
 
         cv::namedWindow(mainWindow1, CV_WINDOW_FULLSCREEN);
         cv::namedWindow(mainWindow2, CV_WINDOW_FULLSCREEN);
