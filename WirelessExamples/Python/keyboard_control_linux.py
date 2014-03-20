@@ -11,10 +11,10 @@ from struct import *
 import sys, tty, termios
 
 
-robot = "/r1"
+robot = "/r3"
 
 
-client = mosquitto.Mosquitto("status")
+client = mosquitto.Mosquitto("kb1234")
 client.connect("192.168.0.100")
 client.publish("status", "action " + robot)
 time.sleep(0.05)
@@ -32,19 +32,19 @@ while True:
         aux = sys.stdin.read(1)
 
         if aux == "w":
-            msg  = pack('iiii', 70, 70, 200, 0)
+            msg  = pack('iiii', -70, -70, 300, 0)
             client.publish(robot, msg)
         elif aux == "a":
-            msg  = pack('iiii', -25, 25, 200, 0)
+            msg  = pack('iiii', 25, -25, 300, 0)
             client.publish(robot, msg)
         elif aux == "d":
-            msg  = pack('iiii', 25, -25, 200, 0)
+            msg  = pack('iiii', -25, 25, 300, 0)
             client.publish(robot, msg)
         elif aux == " ":
-            msg  = pack('iiii', 0, 0, 200, 0)
+            msg  = pack('iiii', 0, 0, 300, 0)
             client.publish(robot, msg)
         elif aux == "s":
-            msg = pack('iiii', -50, -50, 200, 0)
+            msg = pack('iiii', 50, 50, 300, 0)
             client.publish(robot, msg)
 
         print 'pressed ' + aux
