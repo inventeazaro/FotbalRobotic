@@ -193,21 +193,7 @@ void camera1 () {
     vector<Vec3f> circles;
     // Apply the Hough Transform to find the circles
     cvtColor( roi, roi, CV_BGR2GRAY );
-    HoughCircles( roi, circles, CV_HOUGH_GRADIENT, 1, 10, 100, 24, 0, 0 );
-    cerr<<circles.size();
-      // Draw the circles detected
-      for( size_t i = 0; i < circles.size(); i++ )
-      {
-          Point center(cvRound(circles[i][0])+400, cvRound(circles[i][1]));
-          int radius = cvRound(circles[i][2]);
-          circle( InImage, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
-          circle( InImage, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
-         // cout << "center : " << center << "\nradius : " << radius << endl;
-          center_dreapta = center;
-       //   cerr<<"\njtxj "<<center_dreapta.y;  //asta trb sa devina 700
 
-       }
-     ///
 
     //filtru sharpen
     cv::Mat tmp1;
@@ -254,6 +240,21 @@ void camera1 () {
            //    cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
             }
         }
+        HoughCircles( roi, circles, CV_HOUGH_GRADIENT, 1, 10, 100, 24, 0, 0 );
+        cerr<<circles.size();
+          // Draw the circles detected
+          for( size_t i = 0; i < circles.size(); i++ )
+          {
+              Point center(cvRound(circles[i][0])+400, cvRound(circles[i][1]));
+              int radius = cvRound(circles[i][2]);
+              circle( InImage, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+              circle( InImage, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
+             // cout << "center : " << center << "\nradius : " << radius << endl;
+              center_dreapta = center;
+           //   cerr<<"\njtxj "<<center_dreapta.y;  //asta trb sa devina 700
+
+           }
+         ///
     if (nr == 2) {
         onces = 1;
         la0s = (cps1x + cps2x) / 2;
@@ -373,18 +374,7 @@ void camera2() {
     vector<Vec3f> circles2;
     // Apply the Hough Transform to find the circles
     cvtColor( roi2, roi2, CV_BGR2GRAY );
-    HoughCircles( roi2, circles2, CV_HOUGH_GRADIENT, 1, 10, 200, 24, 0, 0 );
-    //cerr<<circles2.size();
-    // Draw the circles detected
-    for( size_t i = 0; i < circles2.size(); i++ )
-      {
-          Point center2(cvRound(circles2[i][0])+400, cvRound(circles2[i][1])+620);
-          int radius2 = cvRound(circles2[i][2]);
-          circle( InImage2, center2, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
-          circle( InImage2, center2, radius2, Scalar(0,0,255), 3, 8, 0 );// circle outline
-        //  cout << "center : " << center2 << "\nradius : " << radius2 << endl;
-          center_stanga = center2;
-      }
+
     //cerr<<center_stanga.x<<" si pe y "<<center_stanga.y;
     //filtru sharpen
     cv::Mat tmp2;
@@ -429,6 +419,18 @@ void camera2() {
       //          cerr<<"miweeuiwpoarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
             }
         }
+        HoughCircles( roi2, circles2, CV_HOUGH_GRADIENT, 1, 10, 200, 24, 0, 0 );
+        //cerr<<circles2.size();
+        // Draw the circles detected
+        for( size_t i = 0; i < circles2.size(); i++ )
+          {
+              Point center2(cvRound(circles2[i][0])+400, cvRound(circles2[i][1])+620);
+              int radius2 = cvRound(circles2[i][2]);
+              circle( InImage2, center2, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+              circle( InImage2, center2, radius2, Scalar(0,0,255), 3, 8, 0 );// circle outline
+            //  cout << "center : " << center2 << "\nradius : " << radius2 << endl;
+              center_stanga = center2;
+          }
     if (nr2 == 2) {
         onced = 1;
         la0d = (cpd1x + cpd2x) / 2;
@@ -438,8 +440,7 @@ void camera2() {
        // cerr<<"pentru marker de la 0,0: "<< cpd1y<<"iar pt marker de la 0,700 "<<cpd2y<<" //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////";
         }
     }
-
-    //for each marker, draw info and its boundaries in the image
+     //for each marker, draw info and its boundaries in the image
     for (unsigned int i=0;i<Markers2.size();i++) {
         //cout<<Markers2[i]<<endl;
         Markers2[i].draw(InImage2,Scalar(0,0,255),2);
