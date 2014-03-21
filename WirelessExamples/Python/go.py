@@ -13,9 +13,9 @@ time.sleep(0.05)
 def do_stuff():
   lw = 80
   rw = 80
-  msg   = pack('iii', lw, rw, 0)
+  msg   = pack('iiii', lw, rw, 0, 0)
   print msg
-  client.publish("/r1", msg)
+  client.publish("/r13", msg)
   time.sleep(0.7)
 
 while (True):
@@ -25,7 +25,7 @@ while (True):
     except KeyboardInterrupt:
         lw = 0
         rw = 0
-        msg   = pack('iii', lw, rw, 0)
+        msg   = pack('iiii', lw, rw, 0, 0)
         print msg
         client.publish("/r1", msg)
         time.sleep(0.5)
