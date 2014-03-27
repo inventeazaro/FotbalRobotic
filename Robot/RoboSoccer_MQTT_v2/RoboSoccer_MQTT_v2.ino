@@ -132,6 +132,18 @@ void loop() {
         client.subscribe(ROBOT_ID);
     }
   }
+  
+  if(!client.connected()){
+    mySerial.println("disconnected, tring to reconnect");
+    if (client.connect("RSB " ROBOT_ID)) {
+        client.publish("status", SW_VERSION " " ROBOT_ID);
+        client.subscribe(ROBOT_ID);
+    }
+  }
+  
+  if(millis()%10000 == 0){
+    mySerial.println("ALIVE!");
+  }
 }
 
 void go(int speedLeft, int speedRight) {

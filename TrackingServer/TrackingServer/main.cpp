@@ -553,7 +553,36 @@ int main(int argc,char **argv)
 
     try
     {
+<<<<<<< HEAD
         //cv::waitKey(5000);
+=======
+        //read the input image
+        //try opening first as video
+        VideoCapture vreader(0);  //camera
+        VideoCapture vreader2(1);  //camera de la 0,0
+
+        cv::namedWindow(mainWindow1, CV_WINDOW_FULLSCREEN);
+        cv::namedWindow(mainWindow2, CV_WINDOW_FULLSCREEN);
+
+        //ATENTIE! AICI SETAM LA 1080 CU 720. IN CAMERA PARAMETERS MAI JOS AVEM 640 CU 480 PE CARE LE MODIFICAM LA 1080 CU 720??
+        //intrebare: de ce folosim camparam?
+        vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+        vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
+        vreader2.set(CV_CAP_PROP_FRAME_HEIGHT, 720);
+
+        //TODO important shit!
+        //system("guvcview -d /dev/video1 -f MJPEG -s 960x720 -o");
+        //system("guvcview -d /dev/video2 -f MJPEG -s 960x720 -o");
+
+        //read camera parameters if specifed
+        CamParam_stanga.readFromXMLFile("/etc/fr/camera_stanga.yml");
+        CamParam_dreapta.readFromXMLFile("/etc/fr/camera.yml");
+        //resizes the parameters to fit the size of the input image
+        CamParam_stanga.resize( InImage.size());
+        CamParam_dreapta.resize( InImage.size());
+
+>>>>>>> e4fbb173a30fa2c7f0ca57f7e535ffce011b9e7a
         while(1) {
 
             // Call mosquitto
