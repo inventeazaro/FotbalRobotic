@@ -524,8 +524,8 @@ int main(int argc,char **argv)
     {
         //read the input image
         //try opening first as video
-        VideoCapture vreader(1);  //camera
-        VideoCapture vreader2(2);  //camera de la 0,0
+        VideoCapture vreader(0);  //camera
+        VideoCapture vreader2(1);  //camera de la 0,0
 
         cv::namedWindow(mainWindow1, CV_WINDOW_FULLSCREEN);
         cv::namedWindow(mainWindow2, CV_WINDOW_FULLSCREEN);

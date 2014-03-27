@@ -15,7 +15,7 @@ def do_stuff():
   rw = 80
   msg   = pack('iiii', lw, rw, 0, 0)
   print msg
-  client.publish("/r13", msg)
+  client.publish("/r5", msg)
   time.sleep(0.7)
 
 while (True):
