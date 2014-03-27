@@ -69,7 +69,6 @@ const char mainWindowsettings1[] = "FotbalRobotic Tracker settings camera 1";
 const char mainWindow2[] = "FotbalRobotic Tracker camera 2";
 const char mainWindowsettings2[] = "FotbalRobotic Tracker settings camera 2";
 
-cv::Mat imagine_stanga;
 int mid = 0;
 int rc = 0;
 
@@ -82,8 +81,10 @@ int calib_cam2;
 aruco::CameraParameters CamParam_stanga,CamParam_dreapta;
 
 Point center_dreapta;
-
+Point center_stanga;
 cv::Mat imagine_dreapta;
+cv::Mat imagine_stanga;
+
 void* camera1 (void *threadid) {
     int hLow1 = 116;
     int sLow1 = 73;
@@ -148,7 +149,6 @@ void* camera1 (void *threadid) {
     // Apply the Hough Transform to find the circles
     cvtColor( roi, roi, CV_BGR2GRAY );
 
-
     //filtru sharpen
     cv::Mat tmp1;
     cv::GaussianBlur(imagine_dr, tmp1, cv::Size(3,3), 5);
@@ -156,13 +156,9 @@ void* camera1 (void *threadid) {
     cv::createTrackbar("alfa", mainWindowsettings1, &alfa, 300, NULL);
     cv::createTrackbar("beta", mainWindowsettings1, &beta, 300, NULL);
 
-    //read marker size if specified
-    //Ok, let's detect
     MDetector.getCandidates();
     MDetector.setMinMaxSize(0.005, 0.5);
-
     MDetector.detect(imagine_dr,Markers,CamParam_dreapta,MarkerSize_dr);
-    //cum consider ca ar fi bine: fac de doua ori, dar a doua oara adaug un parametru la coordonate.
 
     //for each marker, draw info and its boundaries in the image
     int nr = 0;
@@ -172,7 +168,7 @@ void* camera1 (void *threadid) {
             if (Markers[i].id == 1023 || Markers[i].id == 682)
             {
             Markers[i].draw(imagine_dr,Scalar(0,0,255),2);
-            cv::Point2f markerCenter, p1, p2;
+            cv::Point2f markerCenter;
 
             markerCenter = Markers[i].getCenter();
             if (markerCenter.x !=0 && markerCenter.y !=0) {
@@ -189,9 +185,9 @@ void* camera1 (void *threadid) {
                     nr++;
                 }
             }
-           //    cerr<<"poarta 1 stanga: x: "<<cps1x<<" y: "<<cps1y<<endl;
+           //    cerr<<"poarta 1 dreapta: x: "<<cps1x<<" y: "<<cps1y<<endl;
 
-           //    cerr<<"poarta 2 stanga: x: "<<cps2x<<" y: "<<cps2y<<endl;
+           //    cerr<<"poarta 2 dreapta: x: "<<cps2x<<" y: "<<cps2y<<endl;
             }
         }
         HoughCircles( roi, circles, CV_HOUGH_GRADIENT, 1, 10, 100, 24, 0, 0 );
@@ -203,11 +199,8 @@ void* camera1 (void *threadid) {
               int radius = cvRound(circles[i][2]);
               circle( imagine_dr, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
               circle( imagine_dr, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
-             // cout << "center : " << center << "\nradius : " << radius << endl;
               center_dreapta = center;
-           //   cerr<<"\njtxj "<<center_dreapta.y;  //asta trb sa devina 700
            }
-         ///
     if (nr == 2) {
         onces = 1;
         la0s = (cps1x + cps2x) / 2;
@@ -224,11 +217,7 @@ void* camera1 (void *threadid) {
 
    // cerr<<"\n\n coord cam 2 calib_cam2la mijlocul terenului: "<<center_dreapta.y<<" iar la poarta din dreapta: "<<la0s<<"\n\n";
     for (unsigned int i=0;i<Markers.size();i++) {
-        //cout<<Markers[i]<<endl;
         Markers[i].draw(imagine_dr,Scalar(0,0,255),2);
-        double position[3];
-        double orientation[4];
-
         cv::Point2f markerCenter, p1, p2;
         double pd, angle;
         robotCoords coords;
@@ -249,7 +238,6 @@ void* camera1 (void *threadid) {
                 coords.x = (coords.x - center_dreapta.y) * 700 / (la0s - center_dreapta.y);
                 coords.x = coords.x + 700;  // de fapt + calib_cam2
                 coords.y = cps1y - coords.y;
-
                 coords.y = coords.y * 700 / cps2y;
                 //coords.y = (coords.y - (markerdela0,0 +- offset)/ (markerdela500,0 +- offset2) - (markerdela0,0 +- offset))
                 p1.x = Markers[i][0].x;
@@ -262,7 +250,10 @@ void* camera1 (void *threadid) {
                 angle= atan2(p1.x-p2.x, p1.y-p2.y);
                 angle = angle*180/3.1415 + 180;
                 angle = fmod(angle+90,360);
-                //cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
+                Point center(center_dreapta.x, center_dreapta.y);
+                int radius = 33;
+                circle( imagine_dr, center, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+                circle( imagine_dr, center, radius, Scalar(0,0,255), 3, 8, 0 );// circle outline
                 if (coords.id == 1) cerr<<"\n\nunghiul: "<<angle<<"\n\ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
                 coords.angle = angle;
                 coords.timestamp = std::time(0);
@@ -273,12 +264,8 @@ void* camera1 (void *threadid) {
     cv::imshow(mainWindow1,imagine_dr);
   //  cv::waitKey(50);
     }
-  //  pthread_exit(NULL);
+  pthread_exit(NULL);
 }
-
-
-
-Point center_stanga;
 
 void* camera2(void *threadid) {
 
@@ -380,9 +367,9 @@ void* camera2(void *threadid) {
                         nr2++;
                     }
                 }
-          //          cerr<<"muierhgepoarta 1 stanga: x: "<<cpd1x<<" y: "<<cpd1y<<endl;
+          //          cerr<<"poarta 1 stanga: x: "<<cpd1x<<" y: "<<cpd1y<<endl;
 
-          //          cerr<<"miweeuiwpoarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
+          //          cerr<<"poarta 2 stanga: x: "<<cpd2x<<" y: "<<cpd2y<<endl;
                 }
             }
             HoughCircles( roi2, circles2, CV_HOUGH_GRADIENT, 1, 10, 200, 24, 0, 0 );
@@ -403,17 +390,18 @@ void* camera2(void *threadid) {
             cpd2y = cpd1y - cpd2y;
             calib_cam2 = (center_stanga.y - la0d) * 700 / (center_stanga.y - la0d);
 
-           // cerr<<"pentru marker de la 0,0: "<< cpd1y<<"iar pt marker de la 0,700 "<<cpd2y<<" //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////";
+            cerr<<"POARTA DIN STANGA pentru marker de la 0,0: "<< cpd1y<<"iar pt marker de la 0,700 "<<cpd2y<<" //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////";
+            cerr<<"pentru cerc mijloc camera stanga: "<<center_stanga.x<<"cu "<<center_stanga.y<<" (x,y)\n";
             }
         }
-        cerr<<"\nWTFX\n";
+        Point center2(center_stanga.x, center_stanga.y);
+        int radius2 = 33;
+        circle( imagine_st, center2, 3, Scalar(0,255,0), -1, 8, 0 );// circle center
+        circle( imagine_st, center2, radius2, Scalar(0,0,255), 3, 8, 0 );// circle outline
+
          //for each marker, draw info and its boundaries in the image
         for (unsigned int i=0;i<Markers2.size();i++) {
-            //cout<<Markers2[i]<<endl;
             Markers2[i].draw(imagine_st,Scalar(0,0,255),2);
-            double position[3];
-            double orientation[4];
-
             cv::Point2f markerCenter, p1, p2;
             double pd, angle;
             robotCoords coords;
@@ -424,7 +412,6 @@ void* camera2(void *threadid) {
                 coords.id = idAssocMat[Markers2[i].id];
                 coords.y  = markerCenter.x;
                 coords.x  = markerCenter.y;
-               // cerr<<coords.id;
                // if (coords.id ==6) cerr<<"coord camera 2nemodif x: "<<coords.x;
                 if ((coords.x > la0d) && (coords.x < (center_stanga.y + 15))) { //hard ca sa tina cont de primul cerc
 
@@ -445,8 +432,7 @@ void* camera2(void *threadid) {
                     angle = angle*180/3.1415 + 180;
                     angle = fmod(angle+90,360);
 
-                //    cout<<"Id:"<< coords.id << "Ang: "<<angle<<endl;
-               //     if (coords.id == 9) cerr<<"center_stanga pt x este: "<<calib_cam2<<"\n/ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl<<"/n/n";
+             //     if (coords.id == 9) cerr<<"center_stanga pt x este: "<<calib_cam2<<"\n/ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl<<"/n/n";
                     if (coords.id == 1) cerr<<"\n\nunghiul: "<<angle<<"\n\ncoord robot: x:" << coords.x<<" y: "<<coords.y<<endl;
 
                     coords.angle = angle;
@@ -458,12 +444,13 @@ void* camera2(void *threadid) {
         cv::imshow(mainWindow2,imagine_st);
         cv::waitKey(50);
     }
+  pthread_exit(NULL);
 }
 void* preluare_camera_stanga (void *threadid) {
 
     long tid;
     tid = (long)threadid;
-    int oncest2 = 0;
+    int oncest = 0;
     VideoCapture vreader2(2);  //camera
 
     vreader2.set(CV_CAP_PROP_FRAME_WIDTH, 960);
@@ -485,10 +472,10 @@ void* preluare_camera_stanga (void *threadid) {
         return 0;
     }
     else
-        if (oncest2==0) {
+        if (oncest==0) {
             CamParam_stanga.resize(imagine_stanga.size());
             pthread_create(&threads[3],NULL,camera2,(void*)1);
-            oncest2++;}
+            oncest++;}
 
     //cv::imshow(mainWindow2,imagine_stanga);
     cv::waitKey(50);
@@ -500,7 +487,7 @@ void* preluare_camera_dreapta (void *threadid) {
 
     long tid;
     tid = (long)threadid;
-    int once2 = 0;
+    int once = 0;
     VideoCapture vreader(1);
 
     vreader.set(CV_CAP_PROP_FRAME_WIDTH, 960);
@@ -521,28 +508,18 @@ void* preluare_camera_dreapta (void *threadid) {
             return 0;
         }
         else
-            if (once2 ==0) {
-                pthread_create(&threads[2],NULL,camera1,(void*)1);
+            if (once ==0) {
+                pthread_create(&threads[2],NULL,camera1,(void*)3);
 
                 pthread_create(&threads[1],NULL,preluare_camera_stanga,(void*)2);
 
                 CamParam_dreapta.resize( imagine_dreapta.size());
-                once2++;}
+                once++;}
 
         //cv::imshow(mainWindow1,imagine_dreapta);
         cv::waitKey(50);
     }
     pthread_exit(NULL);
-}
-
-void *PrintHello(void *threadid)
-{
-   long tid;
-   tid = (long)threadid;
-   while (1){
-   cout << "Hello World! Thread ID, " << tid << endl;
-   }
-   pthread_exit(NULL);
 }
 
 int main(int argc,char **argv)
@@ -576,11 +553,7 @@ int main(int argc,char **argv)
 
     try
     {
-        cv::waitKey(5000);
-       // pthread_create(&threads[2],NULL,camera1,(void*)1);
-       // pthread_create(&threads[3],NULL,camera2,(void*)1);
-
-
+        //cv::waitKey(5000);
         while(1) {
 
             // Call mosquitto
