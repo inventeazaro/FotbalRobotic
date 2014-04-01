@@ -28,3 +28,5 @@ if(ARUCO_FOUND)
   include_directories(${ARUCO_INCLUDE_DIRS})
   target_link_libraries (${PROJECT_NAME} ${ARUCO_LIBRARIES})
 endif(ARUCO_FOUND)
+
+target_link_libraries (${PROJECT_NAME} -lpthread)
