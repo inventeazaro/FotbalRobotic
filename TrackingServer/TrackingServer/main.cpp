@@ -553,8 +553,8 @@ int main(int argc,char **argv)
 
     try
     {
-        // read the input image
-        // try opening first as video
+        //read the input image
+        //try opening first as video
         VideoCapture vreader(0);  //camera
         VideoCapture vreader2(1);  //camera de la 0,0
 
