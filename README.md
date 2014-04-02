@@ -3,9 +3,14 @@ FotbalRobotic
 
 FotbalRobotic.ro
 
+Prezentare 2 aprilie https://docs.google.com/presentation/d/1TdFgPZz3weJUdlSes3dEUygwznn3Ui6ydXaogeYovOA/edit?usp=sharing
+
+
 Prezentare MQTT:   https://docs.google.com/presentation/d/1B8m3zq4aokjhvYKi9-Jdrvx44ONbNFrP2mTVDvivu1M/edit
 
 Prezentare OpenCV: https://docs.google.com/presentation/d/1baPkm6FKmFFT4zwOE0GrqqdTjVeDX2DwXLLpiRCvxWg/edit
+
+
 
 
 Resurse 
