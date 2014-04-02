@@ -33,7 +33,6 @@ SoftwareSerial mySerial(4, 7); //RX, TX
 int motor1 = 0; //left
 int motor2 = 0; //right
 int time   = 0;
-int rotation = 0;
 long long lastTimeReceived=0;
 
 int left_r = 0;
@@ -43,7 +42,8 @@ struct control {
   long left;
   long right;
   long time;
-  long rotation;
+  long rotation_left;
+  long rotation_right;
 };
 
 void callback(char* topic, uint8_t* payload, unsigned int length) {
@@ -52,9 +52,10 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   motor1 = ctr->left;
   motor2 = ctr->right;
   time   = ctr->time;
-  rotation = ctr->rotation;
+  left_r = ctr->rotation_left;
+  right_r= ctr->rotation_right;
   
-  if (time == 0 && rotation == 0)
+  if (time == 0 && left_r == 0)
     time = MQTT_TIMEOUT;
   lastTimeReceived = millis();
     
