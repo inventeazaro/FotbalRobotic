@@ -3,6 +3,9 @@ FotbalRobotic
 
 FotbalRobotic.ro
 
+Prezentare 5 aprilie https://docs.google.com/document/d/1t7kyQ1X0bzMN6HY6SiExA4xOHiRIhhcX-L4CQK51hGg/edit?usp=sharing
+
+
 Prezentare 3 aprilie https://docs.google.com/presentation/d/1TdFgPZz3weJUdlSes3dEUygwznn3Ui6ydXaogeYovOA/edit?usp=sharing
 
 
