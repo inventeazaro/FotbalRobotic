@@ -3,7 +3,7 @@
 #include <WiFly.h>
 #include <PubSubClient.h>
 #include "id.h"
-
+#define MQTT_KEEPALIVE 300 
 #define SW_VERSION    "RS v0.8"
 #define MQTT_TIMEOUT  1000
 
@@ -12,9 +12,9 @@ int MOTOR2_PIN2 = 9;
 int MOTOR1_PIN1 = 6;
 int MOTOR1_PIN2 = 5;
 
-int ENCODER_R = 2;
-int ENCODER_L = 3;
-
+int encoder_l = 3;
+int encoder_r = 2;
+int buttonState_l, buttonState_r, lastButtonState_l, lastButtonState_r;
 
 // Connection to wireless network
 // It takes ~ 26 seconds to connect to wifi and mqtt server
@@ -84,21 +84,16 @@ void setup() {
   pinMode(MOTOR2_PIN1, OUTPUT);
   pinMode(MOTOR2_PIN2, OUTPUT);
   
-  pinMode(ENCODER_R, INPUT);
-  pinMode(ENCODER_L, INPUT);
+  pinMode(encoder_l, INPUT);
+  pinMode(encoder_r, INPUT);
   
-  attachInterrupt(0, right, CHANGE);
-  attachInterrupt(1, left, CHANGE);
+  //attachInterrupt(0, right, CHANGE);
+  //attachInterrupt(1, left, CHANGE);
   
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
   //wiFly.begin(&Serial, &mySerial);
   WiFly.begin();
-
-  //WiFly.join(("fotbalrobotic"), ("inventeaza"));
-  //mySerial.println(F("Connected to wireless network!"));
-  //mySerial.println(F("Attempting MQTT connection!"));
-
   if (client.connect("RSB " ROBOT_ID)) {
     client.publish("status", SW_VERSION " " ROBOT_ID);
     client.subscribe(ROBOT_ID);
@@ -111,19 +106,71 @@ void setup() {
   mySerial.println(freeRAM());
 }
 
-void loop() {
-  if(millis() >= (lastTimeReceived+time) &&
-    (motor1 || motor2)) {
-    motor1 = 0;
-    motor2 = 0;
+long nr = 0;
+
+void comanda_encoder(){
+//while(left_r > 0 || right_r > 0)
+  //{
+  buttonState_l = digitalRead(encoder_l);
+  buttonState_r = digitalRead(encoder_r);
+
+  if (buttonState_l != lastButtonState_l) {
+    if (buttonState_l == HIGH) {
+      left_r--;
+        if(left_r <= 0)
+          {motor1=0;}            //motor stanga(- de verificat si pe encoder
+     // Serial.print("Left: ");
+     // Serial.print(left_r);
+    } 
   }
   
-  go(motor1, motor2);
+  if (buttonState_r != lastButtonState_r) {
+    if (buttonState_r == HIGH) {
+      right_r--;                //motor stanga(- de verificat si pe encoder
+        if(right_r <= 0)
+          {motor2=0;} 
+     // Serial.print("Right: ");
+     // Serial.println(right_r);
+    } 
+  }
   
-  if(millis() > lastTimeReceived+time) {
+  lastButtonState_l = buttonState_l;
+  lastButtonState_r = buttonState_r;
+
+  go(motor1,motor2);
+
+  //}
+}
+
+
+void loop() {
+  client.loop();
+  
+  //daca am val pt encoder apelez comanda encoder
+  if (left_r > 0 || right_r > 0)  
+    {
+      comanda_encoder();
+    }
+  else   
+    if(millis() >= (lastTimeReceived+time) && (motor1 || motor2)) 
+    {
+      motor1 = 0;
+      motor2 = 0;
+    }
+  
+  go(motor1, motor2);
+ //if(left_r <=0 && right_r <=0){ 
+  /*if(millis() > lastTimeReceived+time) {
     motor1 = 0;
     motor2 = 0;
     go(motor1, motor2);
+  }//}
+  */
+  nr++;
+  if (nr > 35000) //pentru a nu se deconecta, dar tot pierde conexiunea
+  {
+    nr = 0;
+    client.publish("status",ROBOT_ID "<- sunt inca prezent");
   }
   
   if (!client.loop()) {
@@ -145,6 +192,7 @@ void loop() {
   if(millis()%10000 == 0){
     mySerial.println("ALIVE!");
   }
+ // if(!wiFlyClient.connected()) WiFly.setUart(&Serial);;
 }
 
 void go(int speedLeft, int speedRight) {
