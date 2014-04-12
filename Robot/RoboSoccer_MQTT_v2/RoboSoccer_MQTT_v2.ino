@@ -93,6 +93,7 @@ void setup() {
   attachInterrupt(0, rightInt, CHANGE);
   attachInterrupt(1, leftInt, CHANGE);
   
+#ifdef COMM_ENABLED
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
   //wiFly.begin(&Serial, &mySerial);
@@ -105,6 +106,7 @@ void setup() {
   }
   
   mySerial.println(F("Successfuly connected and running!"));
+#endif
   mySerial.print(F("FreeRAM: "));
   mySerial.println(freeRAM());
 }
@@ -112,7 +114,9 @@ void setup() {
 long nr = 0;
 
 void loop() {
+#ifdef COMM_ENABLED
   client.loop();
+#endif
   
   //daca am val pt encoder apelez comanda encoder
 //  if (left_r > 0 || right_r > 0)  
@@ -127,14 +131,9 @@ void loop() {
     }
   
   go(motor1, motor2);
- //if(left_r <=0 && right_r <=0){ 
-  /*if(millis() > lastTimeReceived+time) {
-    motor1 = 0;
-    motor2 = 0;
-    go(motor1, motor2);
-  }//}
-  */
-  nr++;
+
+
+#ifdef COMM_ENABLED
   if (nr > 35000) //pentru a nu se deconecta, dar tot pierde conexiunea
   {
     nr = 0;
@@ -156,14 +155,14 @@ void loop() {
         client.subscribe(ROBOT_ID);
     }
   }
-  
+#endif
+
   if(millis()%1000 == 0){
     mySerial.println("ALIVE!");
-    mySerial.print(encoder_l, DEC);
+    mySerial.print(left_r, DEC);
     mySerial.print("|");
-    mySerial.println(encoder_r, DEC);
+    mySerial.println(right_r, DEC);
   }
- // if(!wiFlyClient.connected()) WiFly.setUart(&Serial);;
 }
 
 void go(int speedLeft, int speedRight) {
