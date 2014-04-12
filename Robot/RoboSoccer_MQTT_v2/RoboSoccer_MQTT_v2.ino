@@ -35,8 +35,8 @@ int motor2 = 0; //right
 int time   = 0;
 long long lastTimeReceived=0;
 
-int left_r = 0;
-int right_r = 0;
+volatile unsigned int left_r = 0;
+volatile unsigned int right_r = 0;
 
 struct control {
   long left;
@@ -66,11 +66,11 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   mySerial.println(motor2);
 }
 
-void left() {
+void leftInt() {
   left_r++;
 }
 
-void right() {
+void rightInt() {
   right_r++;
 }
 
@@ -87,8 +87,11 @@ void setup() {
   pinMode(encoder_l, INPUT);
   pinMode(encoder_r, INPUT);
   
-  //attachInterrupt(0, right, CHANGE);
-  //attachInterrupt(1, left, CHANGE);
+  digitalWrite(encoder_l, HIGH);
+  digitalWrite(encoder_r, HIGH);
+  
+  attachInterrupt(0, rightInt, CHANGE);
+  attachInterrupt(1, leftInt, CHANGE);
   
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
@@ -108,50 +111,15 @@ void setup() {
 
 long nr = 0;
 
-void comanda_encoder(){
-//while(left_r > 0 || right_r > 0)
-  //{
-  buttonState_l = digitalRead(encoder_l);
-  buttonState_r = digitalRead(encoder_r);
-
-  if (buttonState_l != lastButtonState_l) {
-    if (buttonState_l == HIGH) {
-      left_r--;
-        if(left_r <= 0)
-          {motor1=0;}            //motor stanga(- de verificat si pe encoder
-     // Serial.print("Left: ");
-     // Serial.print(left_r);
-    } 
-  }
-  
-  if (buttonState_r != lastButtonState_r) {
-    if (buttonState_r == HIGH) {
-      right_r--;                //motor stanga(- de verificat si pe encoder
-        if(right_r <= 0)
-          {motor2=0;} 
-     // Serial.print("Right: ");
-     // Serial.println(right_r);
-    } 
-  }
-  
-  lastButtonState_l = buttonState_l;
-  lastButtonState_r = buttonState_r;
-
-  go(motor1,motor2);
-
-  //}
-}
-
-
 void loop() {
   client.loop();
   
   //daca am val pt encoder apelez comanda encoder
-  if (left_r > 0 || right_r > 0)  
-    {
-      comanda_encoder();
-    }
-  else   
+//  if (left_r > 0 || right_r > 0)  
+//    {
+//
+//    }
+//  else   
     if(millis() >= (lastTimeReceived+time) && (motor1 || motor2)) 
     {
       motor1 = 0;
@@ -189,8 +157,11 @@ void loop() {
     }
   }
   
-  if(millis()%10000 == 0){
+  if(millis()%1000 == 0){
     mySerial.println("ALIVE!");
+    mySerial.print(encoder_l, DEC);
+    mySerial.print("|");
+    mySerial.println(encoder_r, DEC);
   }
  // if(!wiFlyClient.connected()) WiFly.setUart(&Serial);;
 }
