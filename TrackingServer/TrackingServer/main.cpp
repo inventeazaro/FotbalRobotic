@@ -25,12 +25,6 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of Rafael Muñoz Salinas.
 ********************************/
-/************************************
- *
- *
- *
- *
- ************************************/
 #include <iostream>
 #include <ctime>
 #include <mosquitto.h>
@@ -39,6 +33,8 @@ or implied, of Rafael Muñoz Salinas.
 #include <pthread.h>
 #include <math.h>
 #include <pthread.h>
+#include "ApplicationConfig.hpp"
+#include "ConfigTrackerOptions.hpp"
 
 #include "aruco/aruco.h"
 #include "aruco/cvdrawingutils.h"
@@ -52,6 +48,8 @@ int idAssocMat[1024] = {1};
 
 #define mqtt_host "localhost"   //"192.168.0.100"
 #define mqtt_port 1883
+
+string GlobalConfigPath("/etc/fr/tracker.config");
 
 struct robotCoords {
     int id;    // id robot - 1..10
@@ -524,6 +522,8 @@ void* preluare_camera_dreapta (void *threadid) {
 
 int main(int argc,char **argv)
 {
+    ApplicationConfig AppConfig(new ConfigTrackerOptionsParser(), GlobalConfigPath, argc, const_cast <char **>(argv));
+
     idAssocMat[0]    = 1;
     idAssocMat[81]   = 2;
     idAssocMat[277]  = 3;
@@ -540,7 +540,7 @@ int main(int argc,char **argv)
 
     // TODO Find a better solution for this
     // system("uvcdynctrl -d video1 -s \"Exposure (Absolute)\" 100");
-     pthread_create(&threads[0],NULL,preluare_camera_dreapta,(void*)1);
+    pthread_create(&threads[0],NULL,preluare_camera_dreapta,(void*)1);
 
     char clientid[64]="FotbalRobotic.ro Tracking Server";
     mosquitto_lib_init();
