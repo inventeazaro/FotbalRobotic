@@ -7,6 +7,9 @@
 #define SW_VERSION    "RS v0.8"
 #define MQTT_TIMEOUT  1000
 
+// defines for different features
+#define COMM_ENABLED  1
+
 int MOTOR2_PIN1 = 10;
 int MOTOR2_PIN2 = 9;
 int MOTOR1_PIN1 = 6;
@@ -20,7 +23,8 @@ int buttonState_l, buttonState_r, lastButtonState_l, lastButtonState_r;
 // It takes ~ 26 seconds to connect to wifi and mqtt server
 
 // Update these with values suitable for your network.
-byte server[] = { 192, 168, 0, 100 };
+// byte server[] = { 192, 168, 0, 100 };
+byte server[] = { 192, 168, 10, 112 };
 
 WiFlyClient wiFlyClient;
 PubSubClient client(server, 1883, callback, wiFlyClient);
@@ -30,13 +34,19 @@ const char myPassword[] = "inventeaza";
 
 SoftwareSerial mySerial(4, 7); //RX, TX
 
-int motor1 = 0; //left
-int motor2 = 0; //right
-int time   = 0;
-long long lastTimeReceived=0;
+volatile int motor1 = 0; //left
+volatile int motor2 = 0; //right
+unsigned int time   = 0;
+unsigned int steps_l = 0;
+unsigned int steps_r = 0;
+unsigned int laststeps_l = 0;
+unsigned int laststeps_r = 0;
+unsigned long long lastTimeReceived=0;
 
-int left_r = 0;
-int right_r = 0;
+volatile unsigned char mode = 0;
+
+volatile unsigned int left_r = 0;
+volatile unsigned int right_r = 0;
 
 struct control {
   long left;
@@ -48,30 +58,48 @@ struct control {
 
 void callback(char* topic, uint8_t* payload, unsigned int length) {
   struct control *ctr = (struct control *)payload;
-  
+
   motor1 = ctr->left;
   motor2 = ctr->right;
   time   = ctr->time;
-  left_r = ctr->rotation_left;
-  right_r= ctr->rotation_right;
+  steps_l = ctr->rotation_left;
+  steps_r = ctr->rotation_right;
+  laststeps_l = left_r;
+  laststeps_r = right_r;
+
+  if (time == 0 && steps_l == 0 && steps_r == 0) {
+    mode = 0;
+  } else {
+    mode = 1;
+  }
   
-  if (time == 0 && left_r == 0)
-    time = MQTT_TIMEOUT;
   lastTimeReceived = millis();
-    
-  mySerial.print((long int)lastTimeReceived);
+
+  mySerial.print((long int)lastTimeReceived, DEC);
   mySerial.print(" : ");
   mySerial.print(motor1); 
   mySerial.print(" | "); 
   mySerial.println(motor2);
 }
 
-void left() {
+void leftInt() {
   left_r++;
+  if(mode == 1) {
+    if((left_r >= laststeps_l+steps_l)) {
+      motor1 = 0;
+    }
+    go(motor1, motor2);
+  }
 }
 
-void right() {
+void rightInt() {
   right_r++;
+  if(mode == 1) {
+    if((right_r >= laststeps_r+steps_r)) {
+      motor2 = 0;
+    }
+    go(motor1, motor2);
+  }
 }
 
 void setup() {
@@ -83,116 +111,71 @@ void setup() {
   pinMode(MOTOR1_PIN2, OUTPUT);
   pinMode(MOTOR2_PIN1, OUTPUT);
   pinMode(MOTOR2_PIN2, OUTPUT);
-  
+
   pinMode(encoder_l, INPUT);
   pinMode(encoder_r, INPUT);
   
-  //attachInterrupt(0, right, CHANGE);
-  //attachInterrupt(1, left, CHANGE);
+  digitalWrite(encoder_l, HIGH);
+  digitalWrite(encoder_r, HIGH);
   
+  attachInterrupt(0, rightInt, CHANGE);
+  attachInterrupt(1, leftInt, CHANGE);
+  
+#ifdef COMM_ENABLED
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
-  //wiFly.begin(&Serial, &mySerial);
   WiFly.begin();
   if (client.connect("RSB " ROBOT_ID)) {
     client.publish("status", SW_VERSION " " ROBOT_ID);
     client.subscribe(ROBOT_ID);
-  }else{
+  }
+  else{
     mySerial.println(F("Connection problem"));
   }
-  
+
   mySerial.println(F("Successfuly connected and running!"));
+#endif
   mySerial.print(F("FreeRAM: "));
   mySerial.println(freeRAM());
 }
 
-long nr = 0;
-
-void comanda_encoder(){
-//while(left_r > 0 || right_r > 0)
-  //{
-  buttonState_l = digitalRead(encoder_l);
-  buttonState_r = digitalRead(encoder_r);
-
-  if (buttonState_l != lastButtonState_l) {
-    if (buttonState_l == HIGH) {
-      left_r--;
-        if(left_r <= 0)
-          {motor1=0;}            //motor stanga(- de verificat si pe encoder
-     // Serial.print("Left: ");
-     // Serial.print(left_r);
-    } 
-  }
-  
-  if (buttonState_r != lastButtonState_r) {
-    if (buttonState_r == HIGH) {
-      right_r--;                //motor stanga(- de verificat si pe encoder
-        if(right_r <= 0)
-          {motor2=0;} 
-     // Serial.print("Right: ");
-     // Serial.println(right_r);
-    } 
-  }
-  
-  lastButtonState_l = buttonState_l;
-  lastButtonState_r = buttonState_r;
-
-  go(motor1,motor2);
-
-  //}
-}
-
-
 void loop() {
+#ifdef COMM_ENABLED
   client.loop();
-  
-  //daca am val pt encoder apelez comanda encoder
-  if (left_r > 0 || right_r > 0)  
-    {
-      comanda_encoder();
-    }
-  else   
-    if(millis() >= (lastTimeReceived+time) && (motor1 || motor2)) 
-    {
-      motor1 = 0;
-      motor2 = 0;
-    }
-  
-  go(motor1, motor2);
- //if(left_r <=0 && right_r <=0){ 
-  /*if(millis() > lastTimeReceived+time) {
+#endif
+
+  if(millis() >= (lastTimeReceived+time) && (motor1 || motor2) && (!steps_r) && (!steps_l)) {
     motor1 = 0;
     motor2 = 0;
-    go(motor1, motor2);
-  }//}
-  */
-  nr++;
-  if (nr > 35000) //pentru a nu se deconecta, dar tot pierde conexiunea
-  {
-    nr = 0;
-    client.publish("status",ROBOT_ID "<- sunt inca prezent");
   }
   
+  go(motor1, motor2);
+
+#ifdef COMM_ENABLED
   if (!client.loop()) {
     // disconnected
     if (client.connect("RSB " ROBOT_ID)) {
-        client.publish("status", SW_VERSION " " ROBOT_ID);
-        client.subscribe(ROBOT_ID);
+      client.publish("status", SW_VERSION " " ROBOT_ID);
+      client.subscribe(ROBOT_ID);
     }
   }
-  
+
   if(!client.connected()){
     mySerial.println("disconnected, tring to reconnect");
     if (client.connect("RSB " ROBOT_ID)) {
-        client.publish("status", SW_VERSION " " ROBOT_ID);
-        client.subscribe(ROBOT_ID);
+      client.publish("status", SW_VERSION " " ROBOT_ID);
+      client.subscribe(ROBOT_ID);
     }
   }
-  
-  if(millis()%10000 == 0){
+#endif
+
+  if(millis()%1000 == 0){
     mySerial.println("ALIVE!");
+    mySerial.print(left_r, DEC);
+    mySerial.print("|");
+    mySerial.println(right_r, DEC);
+    client.publish("status", ROBOT_ID " PRESENT");
   }
- // if(!wiFlyClient.connected()) WiFly.setUart(&Serial);;
 }
 
 void go(int speedLeft, int speedRight) {
@@ -220,3 +203,4 @@ static int freeRAM () {
   int v; 
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
 }
+
