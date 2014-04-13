@@ -41,8 +41,6 @@ unsigned int steps_l = 0;
 unsigned int steps_r = 0;
 unsigned long long lastTimeReceived=0;
 
-
-
 volatile unsigned int left_r = 0;
 volatile unsigned int right_r = 0;
 
@@ -94,13 +92,13 @@ void setup() {
 
   pinMode(encoder_l, INPUT);
   pinMode(encoder_r, INPUT);
-
-  digitalWrite(encoder_l, LOW);
-  digitalWrite(encoder_r, LOW);
-
+  
+  digitalWrite(encoder_l, HIGH);
+  digitalWrite(encoder_r, HIGH);
+  
   attachInterrupt(0, rightInt, CHANGE);
   attachInterrupt(1, leftInt, CHANGE);
-
+  
 #ifdef COMM_ENABLED
   mySerial.println(F("Attempting wireless connection"));
   WiFly.setUart(&Serial);
