@@ -34,12 +34,16 @@ const char myPassword[] = "inventeaza";
 
 SoftwareSerial mySerial(4, 7); //RX, TX
 
-unsigned int motor1 = 0; //left
-unsigned int motor2 = 0; //right
+volatile int motor1 = 0; //left
+volatile int motor2 = 0; //right
 unsigned int time   = 0;
 unsigned int steps_l = 0;
 unsigned int steps_r = 0;
+unsigned int laststeps_l = 0;
+unsigned int laststeps_r = 0;
 unsigned long long lastTimeReceived=0;
+
+volatile unsigned char mode = 0;
 
 volatile unsigned int left_r = 0;
 volatile unsigned int right_r = 0;
@@ -60,9 +64,15 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   time   = ctr->time;
   steps_l = ctr->rotation_left;
   steps_r = ctr->rotation_right;
+  laststeps_l = left_r;
+  laststeps_r = right_r;
 
-  if (time == 0 && steps_l == 0 && steps_r == 0)
-    time = MQTT_TIMEOUT;
+  if (time == 0 && steps_l == 0 && steps_r == 0) {
+    mode = 0;
+  } else {
+    mode = 1;
+  }
+  
   lastTimeReceived = millis();
 
   mySerial.print((long int)lastTimeReceived, DEC);
@@ -74,10 +84,22 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
 
 void leftInt() {
   left_r++;
+  if(mode == 1) {
+    if((left_r >= laststeps_l+steps_l)) {
+      motor1 = 0;
+    }
+    go(motor1, motor2);
+  }
 }
 
 void rightInt() {
   right_r++;
+  if(mode == 1) {
+    if((right_r >= laststeps_r+steps_r)) {
+      motor2 = 0;
+    }
+    go(motor1, motor2);
+  }
 }
 
 void setup() {
@@ -122,13 +144,12 @@ void loop() {
   client.loop();
 #endif
 
-  if(millis() >= (lastTimeReceived+time) && (motor1 || motor2)) {
+  if(millis() >= (lastTimeReceived+time) && (motor1 || motor2) && (!steps_r) && (!steps_l)) {
     motor1 = 0;
     motor2 = 0;
   }
-
+  
   go(motor1, motor2);
-
 
 #ifdef COMM_ENABLED
   if (!client.loop()) {
