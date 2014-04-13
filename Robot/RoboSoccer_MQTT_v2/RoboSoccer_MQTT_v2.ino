@@ -23,8 +23,8 @@ int buttonState_l, buttonState_r, lastButtonState_l, lastButtonState_r;
 // It takes ~ 26 seconds to connect to wifi and mqtt server
 
 // Update these with values suitable for your network.
-// byte server[] = { 192, 168, 0, 100 };
-byte server[] = { 192, 168, 10, 112 };
+byte server[] = { 192, 168, 0, 100 };
+//byte server[] = { 192, 168, 10, 112 };
 
 WiFlyClient wiFlyClient;
 PubSubClient client(server, 1883, callback, wiFlyClient);
