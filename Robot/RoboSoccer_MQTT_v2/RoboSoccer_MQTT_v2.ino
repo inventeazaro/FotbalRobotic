@@ -10,10 +10,10 @@
 // defines for different features
 #define COMM_ENABLED  1
 
-int MOTOR2_PIN1 = 10;
-int MOTOR2_PIN2 = 9;
-int MOTOR1_PIN1 = 6;
-int MOTOR1_PIN2 = 5;
+int MOTOR2_PIN1 = 9;
+int MOTOR2_PIN2 = 10;
+int MOTOR1_PIN1 = 5;
+int MOTOR1_PIN2 = 6;
 
 int encoder_l = 3;
 int encoder_r = 2;
@@ -60,7 +60,9 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   struct control *ctr = (struct control *)payload;
 
   motor1 = ctr->left;
+  motor1 = map(motor1,0,255,0,150);
   motor2 = ctr->right;
+  motor2 = map(motor2,0,255,0,150);
   time   = ctr->time;
   steps_l = ctr->rotation_left;
   steps_r = ctr->rotation_right;
@@ -176,6 +178,7 @@ void loop() {
     mySerial.println(right_r, DEC);
     client.publish("status", ROBOT_ID " PRESENT");
   }
+  
 }
 
 void go(int speedLeft, int speedRight) {
