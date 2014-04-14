@@ -12,8 +12,8 @@ def main(argv):
 	robot_id = 'r100'
 	left_motor = 100
 	right_motor = 100
-	left_steps = 8
-	right_steps = 8
+	left_steps = 0
+	right_steps = 0
 	time = 0
 	count = 1
 	delay = 50
