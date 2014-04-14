@@ -70,6 +70,7 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   laststeps_r = right_r;
 
   if (time == 0 && steps_l == 0 && steps_r == 0) {
+    time = MQTT_TIMEOUT;
     mode = 0;
   } else {
     mode = 1;

@@ -8,7 +8,7 @@ import random
 
 def main(argv):
 	help_text = 'test.py -r robot_id [-b mosquitto_broker] [-l left_motor] [-r right_motor] [-lstep 10] [-rstep 10]'
-	mosquitto_broker = 'localhost'
+	mosquitto_broker = '192.168.0.100'
 	robot_id = 'r100'
 	left_motor = 100
 	right_motor = 100
@@ -66,6 +66,7 @@ def main(argv):
 		client.loop()
 		Time.sleep(0.05)
 		i = i+1
+	client.loop()
 	client.disconnect()
 	Time.sleep(0.05)
 	sys.exit(2)
