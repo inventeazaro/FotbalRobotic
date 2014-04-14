@@ -1,0 +1,3 @@
+- Use activeMQ broker instead of mosquitto - to test
+- improve robot encoder disks - at least 20 stripes (instead of 8)
+- make the robots perfect
