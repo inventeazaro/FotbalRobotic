@@ -187,7 +187,7 @@ void loop() {
   }
 }
 
-void left(int speedLeft) {
+inline void left(int speedLeft) {
   if (speedLeft > 0) {
     analogWrite(MOTOR1_PIN1, speedLeft);
     analogWrite(MOTOR1_PIN2, 0);
@@ -198,7 +198,7 @@ void left(int speedLeft) {
   }
 }
 
-void right(int speedRight) {
+inline void right(int speedRight) {
   if (speedRight > 0) {
     analogWrite(MOTOR2_PIN1, speedRight);
     analogWrite(MOTOR2_PIN2, 0);
