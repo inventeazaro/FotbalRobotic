@@ -78,11 +78,13 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   
   lastTimeReceived = millis();
 
+  #ifdef DEBUG
   mySerial.print((long int)lastTimeReceived, DEC);
   mySerial.print(" : ");
   mySerial.print(motor1); 
   mySerial.print(" | "); 
   mySerial.println(motor2);
+  #endif
 }
 
 void leftInt() {
@@ -164,7 +166,9 @@ void loop() {
   }
 
   if(!client.connected()){
+    #ifdef DEBUG
     mySerial.println("disconnected, tring to reconnect");
+    #endif
     if (client.connect("RSB " ROBOT_ID)) {
       client.publish("status", SW_VERSION " " ROBOT_ID);
       client.subscribe(ROBOT_ID);
@@ -173,13 +177,14 @@ void loop() {
 #endif
 
   if(millis()%1000 == 0){
+    #ifdef DEBUG
     mySerial.println("ALIVE!");
     mySerial.print(left_r, DEC);
     mySerial.print("|");
     mySerial.println(right_r, DEC);
+    #endif
     client.publish("status", ROBOT_ID " PRESENT");
   }
-  
 }
 
 void go(int speedLeft, int speedRight) {
