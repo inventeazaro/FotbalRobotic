@@ -48,26 +48,31 @@ def main(argv):
 	if args.delay is not None:
 			delay = args.delay
 
-	client = mosquitto.Mosquitto("robotctrl-" + str(random.randrange(0,100)))
-	client.connect(mosquitto_broker)
-	client.publish("status", "robotcrl python connected")
+	try:
+		client = mosquitto.Mosquitto("robotctrl-" + str(random.randrange(0,100)))
+		client.connect(mosquitto_broker)
+		client.publish("status", "robotcrl python connected")
 
-	print "Broker host:", mosquitto_broker
-	print "Robot id:", robot_id
-	print "Motors: Left:", left_motor, "Right:", right_motor
-	print "Steps:  Left:", left_steps, "Right:", right_steps
-	print "Time:", time
+		print "Broker host:", mosquitto_broker
+		print "Robot id:", robot_id
+		print "Motors: Left:", left_motor, "Right:", right_motor
+		print "Steps:  Left:", left_steps, "Right:", right_steps
+		print "Time:", time
 
 
-	i = 0
-	while i < count:
-		msg = pack("iiiii", left_motor, right_motor, time, left_steps, right_steps)
-		client.publish("/" + str(args.rid), msg)
+		i = 0
+		while i < count:
+			msg = pack("iiiii", left_motor, right_motor, time, left_steps, right_steps)
+			client.publish("/" + str(args.rid), msg)
+			client.loop()
+			Time.sleep(0.05)
+			i = i+1
 		client.loop()
-		Time.sleep(0.05)
-		i = i+1
-	client.loop()
-	client.disconnect()
+		client.disconnect()
+	except KeyboardInterrupt:
+		pass
+	except Exception as e:
+		print "ERROR:", e
 	Time.sleep(0.05)
 	sys.exit(2)
 
