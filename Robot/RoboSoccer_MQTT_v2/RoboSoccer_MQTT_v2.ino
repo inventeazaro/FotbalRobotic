@@ -93,7 +93,7 @@ void leftInt() {
     if((left_r >= laststeps_l+steps_l)) {
       motor1 = 0;
     }
-    go(motor1, motor2);
+    left(motor1);
   }
 }
 
@@ -103,7 +103,7 @@ void rightInt() {
     if((right_r >= laststeps_r+steps_r)) {
       motor2 = 0;
     }
-    go(motor1, motor2);
+    right(motor2);
   }
 }
 
@@ -176,7 +176,7 @@ void loop() {
   }
 #endif
 
-  if(millis()%1000 == 0){
+  if(millis()%2000 == 0){
     #ifdef DEBUG
     mySerial.println("ALIVE!");
     mySerial.print(left_r, DEC);
@@ -187,7 +187,7 @@ void loop() {
   }
 }
 
-void go(int speedLeft, int speedRight) {
+void left(int speedLeft) {
   if (speedLeft > 0) {
     analogWrite(MOTOR1_PIN1, speedLeft);
     analogWrite(MOTOR1_PIN2, 0);
@@ -196,7 +196,9 @@ void go(int speedLeft, int speedRight) {
     analogWrite(MOTOR1_PIN1, 0);
     analogWrite(MOTOR1_PIN2, -speedLeft);
   }
+}
 
+void right(int speedRight) {
   if (speedRight > 0) {
     analogWrite(MOTOR2_PIN1, speedRight);
     analogWrite(MOTOR2_PIN2, 0);
@@ -204,7 +206,12 @@ void go(int speedLeft, int speedRight) {
   else {
     analogWrite(MOTOR2_PIN1, 0);
     analogWrite(MOTOR2_PIN2, -speedRight);
-  }
+  }  
+}
+
+void go(int speedLeft, int speedRight) {
+  left(speedLeft);
+  right(speedRight);
 }
 
 static int freeRAM () {
