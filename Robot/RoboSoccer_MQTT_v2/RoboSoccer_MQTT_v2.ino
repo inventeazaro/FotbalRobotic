@@ -4,7 +4,7 @@
 #include <PubSubClient.h>
 #include "id.h"
 #define MQTT_KEEPALIVE 300 
-#define SW_VERSION    "RS v0.8"
+#define SW_VERSION    "RS v0.9"
 #define MQTT_TIMEOUT  1000
 
 // defines for different features
