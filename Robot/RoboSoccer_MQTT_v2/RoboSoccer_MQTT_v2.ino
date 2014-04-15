@@ -8,6 +8,7 @@
 #define MQTT_TIMEOUT  1000
 
 // defines for different features
+// uncomment the following line to disable mosquitto
 #define COMM_ENABLED  1
 
 int MOTOR2_PIN1 = 9;
