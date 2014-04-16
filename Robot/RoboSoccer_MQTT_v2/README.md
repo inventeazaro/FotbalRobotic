@@ -1,3 +1,9 @@
+Resources:
+==========
+
+http://arduino-info.wikispaces.com/Arduino-PWM-Frequency
+
+
 Robot ids
 
 1-5
