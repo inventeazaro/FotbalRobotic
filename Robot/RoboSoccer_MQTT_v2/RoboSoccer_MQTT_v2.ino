@@ -9,12 +9,13 @@
 
 // defines for different features
 // uncomment the following line to disable mosquitto
-#define COMM_ENABLED  1
+//#define COMM_ENABLED  1
+#define DEBUG 1
 
-int MOTOR2_PIN1 = 9;
-int MOTOR2_PIN2 = 10;
-int MOTOR1_PIN1 = 5;
+int MOTOR1_PIN1 = 10;
 int MOTOR1_PIN2 = 6;
+int MOTOR2_PIN1 = 9;
+int MOTOR2_PIN2 = 5;
 
 int encoder_l = 3;
 int encoder_r = 2;
@@ -27,11 +28,13 @@ int buttonState_l, buttonState_r, lastButtonState_l, lastButtonState_r;
 byte server[] = { 192, 168, 0, 100 };
 //byte server[] = { 192, 168, 10, 112 };
 
+#ifdef COMM_ENABLED
 WiFlyClient wiFlyClient;
 PubSubClient client(server, 1883, callback, wiFlyClient);
 
 const char mySSID[] = "fotbalrobotic";
 const char myPassword[] = "inventeaza";
+#endif
 
 SoftwareSerial mySerial(4, 7); //RX, TX
 
@@ -120,9 +123,11 @@ void setup() {
 
   pinMode(encoder_l, INPUT);
   pinMode(encoder_r, INPUT);
+  pinMode(8, OUTPUT);
   
   digitalWrite(encoder_l, HIGH);
   digitalWrite(encoder_r, HIGH);
+  digitalWrite(8, HIGH);
   
   attachInterrupt(0, rightInt, CHANGE);
   attachInterrupt(1, leftInt, CHANGE);
@@ -143,6 +148,16 @@ void setup() {
 #endif
   mySerial.print(F("FreeRAM: "));
   mySerial.println(freeRAM());
+  
+  motor1 = 50;
+  motor2 = 50;
+  time   = 0;
+  steps_l = 10;
+  steps_r = 10;
+  laststeps_l = left_r;
+  laststeps_r = right_r;
+  mode = 1;
+
 }
 
 void loop() {
@@ -184,7 +199,10 @@ void loop() {
     mySerial.print("|");
     mySerial.println(right_r, DEC);
     #endif
+    
+    #ifdef COMM_ENABLED
     client.publish("status", ROBOT_ID " PRESENT");
+    #endif
   }
 }
 
