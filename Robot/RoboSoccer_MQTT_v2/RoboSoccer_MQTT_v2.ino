@@ -9,13 +9,13 @@
 
 // defines for different features
 // uncomment the following line to disable mosquitto
-//#define COMM_ENABLED  1
-#define DEBUG 1
+#define COMM_ENABLED  1
+//#define DEBUG 1
 
-int MOTOR1_PIN1 = 10;
-int MOTOR1_PIN2 = 6;
-int MOTOR2_PIN1 = 9;
-int MOTOR2_PIN2 = 5;
+int MOTOR1_PIN1 = 9;//fost 10
+int MOTOR1_PIN2 = 5; //fost 6
+int MOTOR2_PIN1 = 10; //fost 9
+int MOTOR2_PIN2 = 6; //fost 5
 
 int encoder_l = 3;
 int encoder_r = 2;
@@ -70,6 +70,10 @@ void callback(char* topic, uint8_t* payload, unsigned int length) {
   time   = ctr->time;
   steps_l = ctr->rotation_left;
   steps_r = ctr->rotation_right;
+  if (left_r > 30000)
+    left_r = 0;
+  if (right_r > 30000)
+    right_r = 0;
   laststeps_l = left_r;
   laststeps_r = right_r;
 
@@ -148,7 +152,7 @@ void setup() {
 #endif
   mySerial.print(F("FreeRAM: "));
   mySerial.println(freeRAM());
-  
+  /*
   motor1 = 50;
   motor2 = 50;
   time   = 0;
@@ -157,7 +161,7 @@ void setup() {
   laststeps_l = left_r;
   laststeps_r = right_r;
   mode = 1;
-
+*/
 }
 
 void loop() {
@@ -199,7 +203,8 @@ void loop() {
     mySerial.print("|");
     mySerial.println(right_r, DEC);
     #endif
-    
+  }
+  if(millis()%10000 == 0){
     #ifdef COMM_ENABLED
     client.publish("status", ROBOT_ID " PRESENT");
     #endif
