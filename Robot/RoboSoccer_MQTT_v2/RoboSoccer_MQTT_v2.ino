@@ -12,10 +12,10 @@
 #define COMM_ENABLED  1
 //#define DEBUG 1
 
-int MOTOR1_PIN1 = 9;//fost 10
-int MOTOR1_PIN2 = 5; //fost 6
-int MOTOR2_PIN1 = 10; //fost 9
-int MOTOR2_PIN2 = 6; //fost 5
+int MOTOR1_PIN1 = 5;//fost 10
+int MOTOR1_PIN2 = 9; //fost 6
+int MOTOR2_PIN1 = 6; //fost 9
+int MOTOR2_PIN2 = 10; //fost 5
 
 int encoder_l = 3;
 int encoder_r = 2;
@@ -107,7 +107,7 @@ void leftInt() {
 
 void rightInt() {
   right_r++;
-  if(mode == 1) {
+  if(mode == 1) {  
     if((right_r >= laststeps_r+steps_r)) {
       motor2 = 0;
     }
